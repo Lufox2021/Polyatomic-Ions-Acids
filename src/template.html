@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polyatomic Ions &amp; Acids</title>
+<style>
+:root{--ink:#1d2433;--muted:#5d6678;--line:#d9dee8;--bg:#f5f7fb;--card:#fff;--accent:#2457c5;--accent-soft:#e8eefc;--ok:#1e7d46;--ok-bg:#e7f6ee;--bad:#b3261e;--bad-bg:#fdecea;--warn-bg:#fff6e0;}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+header{background:#1f3a7a;color:#fff;padding:14px 22px}
+header h1{margin:0;font-size:22px;font-weight:650}
+header p{margin:2px 0 0;opacity:.85;font-size:14px}
+nav.tabs{display:flex;gap:4px;padding:0 18px;background:#1f3a7a;flex-wrap:wrap}
+nav.tabs button{background:transparent;border:0;color:#cfd9f3;padding:10px 16px;font-size:15px;cursor:pointer;border-radius:8px 8px 0 0}
+nav.tabs button.on{background:var(--bg);color:var(--ink);font-weight:600}
+main{max-width:1050px;margin:0 auto;padding:18px}
+.tab{display:none}.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button,.seg button,.tool,.pal button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;cursor:pointer;font-size:14px;color:var(--ink)}
+.filters button.on,.seg button.on,.tool.on,.pal button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.filters .n{opacity:.7;font-size:12px;margin-left:4px}
+button.primary{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-size:15px;cursor:pointer}
+button.plain{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;color:var(--ink)}
+button:disabled{opacity:.45;cursor:default}
+.score{margin-left:auto;color:var(--muted);font-size:14px}
+.prompt{font-size:15px;color:var(--muted);margin-bottom:4px}
+.bigname{font-size:26px;font-weight:650;margin:2px 0 12px}
+svg.struct{width:100%;height:280px;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:10px}
+.formula{font-size:22px;text-align:center;margin:8px 0 2px;min-height:30px}
+.answer{display:flex;gap:8px;margin-top:12px}
+.answer input,.finput{flex:1;font-size:18px;padding:9px 12px;border:1px solid #b9c2d3;border-radius:8px}
+.readsas{color:var(--muted);font-size:14px;margin-top:5px;min-height:20px}
+.fb{margin-top:12px;border-radius:10px;padding:0;font-size:15px}
+.fb.ok{background:var(--ok-bg);border:1px solid #b6e0c7;padding:11px 14px}
+.fb.bad{background:var(--bad-bg);border:1px solid #f3c2bd;padding:11px 14px}
+.fb .rule{margin-top:8px;background:#fff;border-radius:8px;padding:8px 10px;font-size:14px;border:1px solid var(--line)}
+.fb button{margin-top:9px;margin-right:6px}
+.showbox{margin-top:12px;background:var(--warn-bg);border:1px solid #f0d58a;border-radius:10px;padding:12px 14px}
+.showbox svg{width:100%;height:240px;display:block;background:#fff;border-radius:8px;border:1px solid var(--line);margin-bottom:8px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.pal{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.pal button{border-radius:8px;min-width:40px;font-weight:600}
+.pal input{width:56px;padding:5px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+#ed{width:100%;height:390px;display:block;background:#fff;border:1px solid #b9c2d3;border-radius:10px;touch-action:none;cursor:crosshair}
+.tip{color:var(--muted);font-size:13.5px;min-height:20px}
+.edfoot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.edfoot select{font-size:15px;padding:6px;border-radius:8px;border:1px solid #b9c2d3}
+.hidden{display:none!important}
+h2{font-size:19px;margin:0 0 8px}
+h3{font-size:16px;margin:14px 0 6px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+th{background:#f0f3f9;font-weight:600}
+tr.click{cursor:pointer}tr.click:hover{background:var(--accent-soft)}
+tr.sel{background:var(--accent-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.viewer{position:sticky;top:6px;z-index:2}
+.viewer .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.viewer svg{width:100%;height:200px;background:#fbfcfe;border:1px solid var(--line);border-radius:8px}
+.viewer .cap{text-align:center;font-size:14px;margin-top:3px}
+.small{font-size:13.5px;color:var(--muted)}
+textarea{width:100%;min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;border:1px solid var(--line);border-radius:8px;padding:8px}
+.errlist{font-size:14px;margin:8px 0;padding-left:20px}
+.errlist li.bad{color:var(--bad)}.errlist li.ok{color:var(--ok)}
+code{background:#eef1f7;padding:1px 5px;border-radius:4px;font-size:13.5px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Polyatomic Ions &amp; Acids</h1>
+  <p>Naming coach: polyatomic anions, binary acids, and oxoacids</p>
+</header>
+<nav class="tabs" id="tabs">
+  <button data-tab="s2n" class="on">Structure → Name</button>
+  <button data-tab="n2s">Name → Structure</button>
+  <button data-tab="review">Review</button>
+  <button data-tab="instr">Instructor</button>
+</nav>
+<main>
+
+<section class="tab on" id="tab-s2n">
+  <div class="card">
+    <div class="filters" id="f-s2n"></div>
+    <div class="row">
+      <button class="plain" id="s2n-next">Next structure</button>
+      <label class="small"><input type="checkbox" id="s2n-showf" checked> Show the formula too</label>
+      <span class="score" id="s2n-score"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="prompt">Name this species. Acids are dissolved in water.</div>
+    <svg class="struct" id="s2n-svg"></svg>
+    <div class="formula" id="s2n-formula"></div>
+    <div class="answer">
+      <input id="s2n-in" autocomplete="off" spellcheck="false" placeholder="Type the name, e.g. nitrate or nitric acid">
+      <button class="primary" id="s2n-check">Check</button>
+    </div>
+    <div class="fb" id="s2n-fb"></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-n2s">
+  <div class="card">
+    <div class="filters" id="f-n2s"></div>
+    <div class="row">
+      <button class="plain" id="n2s-next">Next name</button>
+      <span class="score" id="n2s-score"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="prompt">Write the structure of:</div>
+    <div class="bigname" id="n2s-name"></div>
+    <div class="seg" id="n2s-mode">
+      <button data-mode="formula" class="on">Type the formula</button>
+      <button data-mode="draw">Draw the Lewis structure</button>
+    </div>
+
+    <div id="n2s-fbox" style="margin-top:12px">
+      <div class="answer" style="margin-top:0">
+        <input class="finput" id="n2s-fin" autocomplete="off" spellcheck="false" placeholder="e.g. SO4^2-   or   H2SO4">
+        <button class="primary" id="n2s-fcheck">Check</button>
+      </div>
+      <div class="readsas" id="n2s-reads"></div>
+      <div class="small">Type charges after <code>^</code>: <code>NO3^-</code>, <code>SO4^2-</code>, <code>PO4^3-</code>. For acids, <code>(aq)</code> is optional.</div>
+    </div>
+
+    <div id="n2s-dbox" class="hidden" style="margin-top:10px">
+      <div class="toolbar" id="tools"></div>
+      <div class="pal" id="pal"></div>
+      <div class="tip" id="tip"></div>
+      <svg id="ed" viewBox="0 0 700 390"></svg>
+      <div class="edfoot">
+        <label>Overall charge:
+          <select id="ed-charge">
+            <option value="0">0 (neutral)</option><option value="-1">1−</option><option value="-2">2−</option><option value="-3">3−</option><option value="1">1+</option>
+          </select>
+        </label>
+        <button class="plain" id="ed-undo">Undo</button>
+        <button class="plain" id="ed-clear">Clear</button>
+        <button class="plain" id="ed-atoms" title="Places the atoms for you (you still connect them)">Give me the atoms</button>
+        <button class="primary" id="ed-check" style="margin-left:auto">Check</button>
+      </div>
+    </div>
+
+    <div class="fb" id="n2s-fb"></div>
+    <div class="showbox hidden" id="n2s-show">
+      <svg id="n2s-key"></svg>
+      <div id="n2s-keytext"></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-review">
+  <div class="grid2">
+    <div class="card">
+      <h2>Polyatomic anions</h2>
+      <p><b>Memorize the -ate ions:</b> nitrate NO₃⁻, sulfate SO₄²⁻, phosphate PO₄³⁻, carbonate CO₃²⁻, chlorate ClO₃⁻ (bromate and iodate follow chlorate).</p>
+      <p><b>Change the number of O atoms</b> and the name changes; the charge stays the same:</p>
+      <table>
+        <tr><th>O atoms vs. -ate</th><th>Name pattern</th><th>Example</th></tr>
+        <tr><td>one more</td><td>per-…-ate</td><td>perchlorate ClO₄⁻</td></tr>
+        <tr><td>same</td><td>-ate</td><td>chlorate ClO₃⁻</td></tr>
+        <tr><td>one fewer</td><td>-ite</td><td>chlorite ClO₂⁻</td></tr>
+        <tr><td>two fewer</td><td>hypo-…-ite</td><td>hypochlorite ClO⁻</td></tr>
+      </table>
+      <p><b>Add H⁺</b> and the charge goes up by 1 for each H: CO₃²⁻ → HCO₃⁻ hydrogen carbonate (bicarbonate); PO₄³⁻ → HPO₄²⁻ hydrogen phosphate → H₂PO₄⁻ dihydrogen phosphate.</p>
+      <p><b>Others to know:</b> hydroxide OH⁻, cyanide CN⁻, peroxide O₂²⁻ (these end in -ide); thiocyanate SCN⁻ and thiosulfate S₂O₃²⁻ (thio- = S in place of O); acetate C₂H₃O₂⁻, oxalate C₂O₄²⁻; chromate CrO₄²⁻, dichromate Cr₂O₇²⁻, permanganate MnO₄⁻.</p>
+    </div>
+    <div class="card">
+      <h2>Acids (dissolved in water)</h2>
+      <h3>Binary acids: H + one nonmetal</h3>
+      <p>hydro- + root + <b>-ic acid</b>. HCl(aq) hydrochloric acid; H₂S(aq) hydrosulfuric acid. HCN(aq) is named the same way (hydrocyanic acid) because its anion, cyanide, ends in -ide.</p>
+      <p class="small">The pure compound HCl(g) is "hydrogen chloride." This tool always names acids as they are in water.</p>
+      <h3>Oxoacids: H + an oxoanion</h3>
+      <table>
+        <tr><th>Anion ending</th><th>Acid ending</th><th>Example</th></tr>
+        <tr><td>-ate</td><td>-ic acid</td><td>sulfate SO₄²⁻ → sulfuric acid H₂SO₄</td></tr>
+        <tr><td>-ite</td><td>-ous acid</td><td>sulfite SO₃²⁻ → sulfurous acid H₂SO₃</td></tr>
+      </table>
+      <p>Keep per- and hypo- (perchlorate → perchloric acid; hypochlorite → hypochlorous acid). Never use hydro-. Add one H for each negative charge, so the acid is neutral. Sulfur keeps "ur" (sulfuric, sulfurous); phosphorus gives phosphoric.</p>
+      <h3>Lewis structures in this tool</h3>
+      <ul class="small" style="padding-left:18px;margin:0">
+        <li>All-octet structures: every atom except H gets 8 electrons; no expanded octets. Show formal charges.</li>
+        <li>Total valence electrons = sum of valence electrons + 1 for each negative charge.</li>
+        <li>Formal charge = valence e⁻ − lone-pair e⁻ − number of bonds. The formal charges add up to the overall charge.</li>
+        <li>In oxoacids, each H is bonded to an O.</li>
+        <li>Chromate, dichromate and permanganate are drawn the same way, as a formal exercise. Real transition-metal bonding is more complicated.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card viewer" id="rv-viewer">
+    <div class="small" id="rv-hint">Click any row below to see its Lewis structures.</div>
+    <div class="pair hidden" id="rv-pair">
+      <div><svg id="rv-a"></svg><div class="cap" id="rv-acap"></div></div>
+      <div><svg id="rv-b"></svg><div class="cap" id="rv-bcap"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Reference: polyatomic anions and their acids</h2>
+    <table id="rv-table"></table>
+  </div>
+  <div class="card">
+    <h2>Reference: binary acids</h2>
+    <table id="rv-btable"></table>
+  </div>
+</section>
+
+<section class="tab" id="tab-instr">
+  <div class="card">
+    <h2>Add or change species</h2>
+    <p class="small">Upload a spreadsheet saved as .csv, or a tab-delimited .txt. One row per species. The tool builds and checks every structure itself, so no answer key is needed. Uploads are saved in this browser only; to change what every student sees, the list goes into the page on GitHub.</p>
+    <table>
+      <tr><th>Column</th><th>Meaning</th></tr>
+      <tr><td><code>id</code></td><td>Unique short ID, e.g. <code>SeO4</code>. A row with the same ID as a built-in species replaces it.</td></tr>
+      <tr><td><code>kind</code></td><td><code>anion</code>, <code>binary</code> or <code>oxoacid</code></td></tr>
+      <tr><td><code>formula</code></td><td>Charge after ^: <code>SeO4^2-</code>, <code>H2SeO4</code></td></tr>
+      <tr><td><code>names</code></td><td>Accepted names, separated by semicolons. The first is the main name.</td></tr>
+      <tr><td><code>center</code></td><td>Central atom, e.g. <code>Se</code>. Write <code>built-in</code> to keep a built-in species' structure.</td></tr>
+      <tr><td><code>ligands</code></td><td>Atoms around the center, separated by spaces: <code>O O O O</code>, or <code>O OH O OH</code> for an acid (OH = O with H on it), or <code>H H</code> for a binary acid.</td></tr>
+      <tr><td><code>rule</code></td><td>Optional: the rule shown after the second wrong try.</td></tr>
+    </table>
+    <div class="row" style="margin-top:12px">
+      <button class="plain" id="in-tpl">Download template (.csv)</button>
+      <button class="plain" id="in-cur">Download current list (.csv)</button>
+      <label class="plain" style="border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;background:#fff">Upload .csv / .txt<input type="file" id="in-file" accept=".csv,.txt,.tsv" class="hidden"></label>
+      <button class="plain" id="in-remove">Remove uploaded species</button>
+    </div>
+    <div id="in-status" class="small" style="margin-top:8px"></div>
+    <ul class="errlist" id="in-errs"></ul>
+    <div id="in-copy" class="hidden">
+      <p class="small">If the download didn't start (it's blocked in the claude.ai preview), copy this text into a file:</p>
+      <textarea id="in-copytext" readonly></textarea>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+/*ENGINE*/
+/*DATA*/
+/*UI*/
+</script>
+</body>
+</html>

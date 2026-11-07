@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polyatomic Ions &amp; Acids</title>
+<style>
+:root{--ink:#1d2433;--muted:#5d6678;--line:#d9dee8;--bg:#f5f7fb;--card:#fff;--accent:#2457c5;--accent-soft:#e8eefc;--ok:#1e7d46;--ok-bg:#e7f6ee;--bad:#b3261e;--bad-bg:#fdecea;--warn-bg:#fff6e0;}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+header{background:#1f3a7a;color:#fff;padding:14px 22px}
+header h1{margin:0;font-size:22px;font-weight:650}
+header p{margin:2px 0 0;opacity:.85;font-size:14px}
+nav.tabs{display:flex;gap:4px;padding:0 18px;background:#1f3a7a;flex-wrap:wrap}
+nav.tabs button{background:transparent;border:0;color:#cfd9f3;padding:10px 16px;font-size:15px;cursor:pointer;border-radius:8px 8px 0 0}
+nav.tabs button.on{background:var(--bg);color:var(--ink);font-weight:600}
+main{max-width:1050px;margin:0 auto;padding:18px}
+.tab{display:none}.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button,.seg button,.tool,.pal button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;cursor:pointer;font-size:14px;color:var(--ink)}
+.filters button.on,.seg button.on,.tool.on,.pal button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.filters .n{opacity:.7;font-size:12px;margin-left:4px}
+button.primary{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-size:15px;cursor:pointer}
+button.plain{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;color:var(--ink)}
+button:disabled{opacity:.45;cursor:default}
+.score{margin-left:auto;color:var(--muted);font-size:14px}
+.prompt{font-size:15px;color:var(--muted);margin-bottom:4px}
+.bigname{font-size:26px;font-weight:650;margin:2px 0 12px}
+svg.struct{width:100%;height:280px;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:10px}
+.formula{font-size:22px;text-align:center;margin:8px 0 2px;min-height:30px}
+.answer{display:flex;gap:8px;margin-top:12px}
+.answer input,.finput{flex:1;font-size:18px;padding:9px 12px;border:1px solid #b9c2d3;border-radius:8px}
+.readsas{color:var(--muted);font-size:14px;margin-top:5px;min-height:20px}
+.fb{margin-top:12px;border-radius:10px;padding:0;font-size:15px}
+.fb.ok{background:var(--ok-bg);border:1px solid #b6e0c7;padding:11px 14px}
+.fb.bad{background:var(--bad-bg);border:1px solid #f3c2bd;padding:11px 14px}
+.fb .rule{margin-top:8px;background:#fff;border-radius:8px;padding:8px 10px;font-size:14px;border:1px solid var(--line)}
+.fb button{margin-top:9px;margin-right:6px}
+.showbox{margin-top:12px;background:var(--warn-bg);border:1px solid #f0d58a;border-radius:10px;padding:12px 14px}
+.showbox svg{width:100%;height:240px;display:block;background:#fff;border-radius:8px;border:1px solid var(--line);margin-bottom:8px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.pal{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.pal button{border-radius:8px;min-width:40px;font-weight:600}
+.pal input{width:56px;padding:5px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+#ed{width:100%;height:390px;display:block;background:#fff;border:1px solid #b9c2d3;border-radius:10px;touch-action:none;cursor:crosshair}
+.tip{color:var(--muted);font-size:13.5px;min-height:20px}
+.edfoot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.edfoot select{font-size:15px;padding:6px;border-radius:8px;border:1px solid #b9c2d3}
+.hidden{display:none!important}
+h2{font-size:19px;margin:0 0 8px}
+h3{font-size:16px;margin:14px 0 6px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+th{background:#f0f3f9;font-weight:600}
+tr.click{cursor:pointer}tr.click:hover{background:var(--accent-soft)}
+tr.sel{background:var(--accent-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.viewer{position:sticky;top:6px;z-index:2}
+.viewer .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.viewer svg{width:100%;height:200px;background:#fbfcfe;border:1px solid var(--line);border-radius:8px}
+.viewer .cap{text-align:center;font-size:14px;margin-top:3px}
+.small{font-size:13.5px;color:var(--muted)}
+textarea{width:100%;min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;border:1px solid var(--line);border-radius:8px;padding:8px}
+.errlist{font-size:14px;margin:8px 0;padding-left:20px}
+.errlist li.bad{color:var(--bad)}.errlist li.ok{color:var(--ok)}
+code{background:#eef1f7;padding:1px 5px;border-radius:4px;font-size:13.5px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Polyatomic Ions &amp; Acids</h1>
+  <p>Naming coach: polyatomic anions, binary acids, and oxoacids</p>
+</header>
+<nav class="tabs" id="tabs">
+  <button data-tab="s2n" class="on">Structure → Name</button>
+  <button data-tab="n2s">Name → Structure</button>
+  <button data-tab="review">Review</button>
+  <button data-tab="instr">Instructor</button>
+</nav>
+<main>
+
+<section class="tab on" id="tab-s2n">
+  <div class="card">
+    <div class="filters" id="f-s2n"></div>
+    <div class="row">
+      <button class="plain" id="s2n-next">Next structure</button>
+      <label class="small"><input type="checkbox" id="s2n-showf" checked> Show the formula too</label>
+      <span class="score" id="s2n-score"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="prompt">Name this species. Acids are dissolved in water.</div>
+    <svg class="struct" id="s2n-svg"></svg>
+    <div class="formula" id="s2n-formula"></div>
+    <div class="answer">
+      <input id="s2n-in" autocomplete="off" spellcheck="false" placeholder="Type the name, e.g. nitrate or nitric acid">
+      <button class="primary" id="s2n-check">Check</button>
+    </div>
+    <div class="fb" id="s2n-fb"></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-n2s">
+  <div class="card">
+    <div class="filters" id="f-n2s"></div>
+    <div class="row">
+      <button class="plain" id="n2s-next">Next name</button>
+      <span class="score" id="n2s-score"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="prompt">Write the structure of:</div>
+    <div class="bigname" id="n2s-name"></div>
+    <div class="seg" id="n2s-mode">
+      <button data-mode="formula" class="on">Type the formula</button>
+      <button data-mode="draw">Draw the Lewis structure</button>
+    </div>
+
+    <div id="n2s-fbox" style="margin-top:12px">
+      <div class="answer" style="margin-top:0">
+        <input class="finput" id="n2s-fin" autocomplete="off" spellcheck="false" placeholder="e.g. SO4^2-   or   H2SO4">
+        <button class="primary" id="n2s-fcheck">Check</button>
+      </div>
+      <div class="readsas" id="n2s-reads"></div>
+      <div class="small">Type charges after <code>^</code>: <code>NO3^-</code>, <code>SO4^2-</code>, <code>PO4^3-</code>. For acids, <code>(aq)</code> is optional.</div>
+    </div>
+
+    <div id="n2s-dbox" class="hidden" style="margin-top:10px">
+      <div class="toolbar" id="tools"></div>
+      <div class="pal" id="pal"></div>
+      <div class="tip" id="tip"></div>
+      <svg id="ed" viewBox="0 0 700 390"></svg>
+      <div class="edfoot">
+        <label>Overall charge:
+          <select id="ed-charge">
+            <option value="0">0 (neutral)</option><option value="-1">1−</option><option value="-2">2−</option><option value="-3">3−</option><option value="1">1+</option>
+          </select>
+        </label>
+        <button class="plain" id="ed-undo">Undo</button>
+        <button class="plain" id="ed-clear">Clear</button>
+        <button class="plain" id="ed-atoms" title="Places the atoms for you (you still connect them)">Give me the atoms</button>
+        <button class="primary" id="ed-check" style="margin-left:auto">Check</button>
+      </div>
+    </div>
+
+    <div class="fb" id="n2s-fb"></div>
+    <div class="showbox hidden" id="n2s-show">
+      <svg id="n2s-key"></svg>
+      <div id="n2s-keytext"></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-review">
+  <div class="grid2">
+    <div class="card">
+      <h2>Polyatomic anions</h2>
+      <p><b>Memorize the -ate ions:</b> nitrate NO₃⁻, sulfate SO₄²⁻, phosphate PO₄³⁻, carbonate CO₃²⁻, chlorate ClO₃⁻ (bromate and iodate follow chlorate).</p>
+      <p><b>Change the number of O atoms</b> and the name changes; the charge stays the same:</p>
+      <table>
+        <tr><th>O atoms vs. -ate</th><th>Name pattern</th><th>Example</th></tr>
+        <tr><td>one more</td><td>per-…-ate</td><td>perchlorate ClO₄⁻</td></tr>
+        <tr><td>same</td><td>-ate</td><td>chlorate ClO₃⁻</td></tr>
+        <tr><td>one fewer</td><td>-ite</td><td>chlorite ClO₂⁻</td></tr>
+        <tr><td>two fewer</td><td>hypo-…-ite</td><td>hypochlorite ClO⁻</td></tr>
+      </table>
+      <p><b>Add H⁺</b> and the charge goes up by 1 for each H: CO₃²⁻ → HCO₃⁻ hydrogen carbonate (bicarbonate); PO₄³⁻ → HPO₄²⁻ hydrogen phosphate → H₂PO₄⁻ dihydrogen phosphate.</p>
+      <p><b>Others to know:</b> hydroxide OH⁻, cyanide CN⁻, peroxide O₂²⁻ (these end in -ide); thiocyanate SCN⁻ and thiosulfate S₂O₃²⁻ (thio- = S in place of O); acetate C₂H₃O₂⁻, oxalate C₂O₄²⁻; chromate CrO₄²⁻, dichromate Cr₂O₇²⁻, permanganate MnO₄⁻.</p>
+    </div>
+    <div class="card">
+      <h2>Acids (dissolved in water)</h2>
+      <h3>Binary acids: H + one nonmetal</h3>
+      <p>hydro- + root + <b>-ic acid</b>. HCl(aq) hydrochloric acid; H₂S(aq) hydrosulfuric acid. HCN(aq) is named the same way (hydrocyanic acid) because its anion, cyanide, ends in -ide.</p>
+      <p class="small">The pure compound HCl(g) is "hydrogen chloride." This tool always names acids as they are in water.</p>
+      <h3>Oxoacids: H + an oxoanion</h3>
+      <table>
+        <tr><th>Anion ending</th><th>Acid ending</th><th>Example</th></tr>
+        <tr><td>-ate</td><td>-ic acid</td><td>sulfate SO₄²⁻ → sulfuric acid H₂SO₄</td></tr>
+        <tr><td>-ite</td><td>-ous acid</td><td>sulfite SO₃²⁻ → sulfurous acid H₂SO₃</td></tr>
+      </table>
+      <p>Keep per- and hypo- (perchlorate → perchloric acid; hypochlorite → hypochlorous acid). Never use hydro-. Add one H for each negative charge, so the acid is neutral. Sulfur keeps "ur" (sulfuric, sulfurous); phosphorus gives phosphoric.</p>
+      <h3>Lewis structures in this tool</h3>
+      <ul class="small" style="padding-left:18px;margin:0">
+        <li>All-octet structures: every atom except H gets 8 electrons; no expanded octets. Show formal charges.</li>
+        <li>Total valence electrons = sum of valence electrons + 1 for each negative charge.</li>
+        <li>Formal charge = valence e⁻ − lone-pair e⁻ − number of bonds. The formal charges add up to the overall charge.</li>
+        <li>In oxoacids, each H is bonded to an O.</li>
+        <li>Chromate, dichromate and permanganate are drawn the same way, as a formal exercise. Real transition-metal bonding is more complicated.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card viewer" id="rv-viewer">
+    <div class="small" id="rv-hint">Click any row below to see its Lewis structures.</div>
+    <div class="pair hidden" id="rv-pair">
+      <div><svg id="rv-a"></svg><div class="cap" id="rv-acap"></div></div>
+      <div><svg id="rv-b"></svg><div class="cap" id="rv-bcap"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Reference: polyatomic anions and their acids</h2>
+    <table id="rv-table"></table>
+  </div>
+  <div class="card">
+    <h2>Reference: binary acids</h2>
+    <table id="rv-btable"></table>
+  </div>
+</section>
+
+<section class="tab" id="tab-instr">
+  <div class="card">
+    <h2>Add or change species</h2>
+    <p class="small">Upload a spreadsheet saved as .csv, or a tab-delimited .txt. One row per species. The tool builds and checks every structure itself, so no answer key is needed. Uploads are saved in this browser only; to change what every student sees, the list goes into the page on GitHub.</p>
+    <table>
+      <tr><th>Column</th><th>Meaning</th></tr>
+      <tr><td><code>id</code></td><td>Unique short ID, e.g. <code>SeO4</code>. A row with the same ID as a built-in species replaces it.</td></tr>
+      <tr><td><code>kind</code></td><td><code>anion</code>, <code>binary</code> or <code>oxoacid</code></td></tr>
+      <tr><td><code>formula</code></td><td>Charge after ^: <code>SeO4^2-</code>, <code>H2SeO4</code></td></tr>
+      <tr><td><code>names</code></td><td>Accepted names, separated by semicolons. The first is the main name.</td></tr>
+      <tr><td><code>center</code></td><td>Central atom, e.g. <code>Se</code>. Write <code>built-in</code> to keep a built-in species' structure.</td></tr>
+      <tr><td><code>ligands</code></td><td>Atoms around the center, separated by spaces: <code>O O O O</code>, or <code>O OH O OH</code> for an acid (OH = O with H on it), or <code>H H</code> for a binary acid.</td></tr>
+      <tr><td><code>rule</code></td><td>Optional: the rule shown after the second wrong try.</td></tr>
+    </table>
+    <div class="row" style="margin-top:12px">
+      <button class="plain" id="in-tpl">Download template (.csv)</button>
+      <button class="plain" id="in-cur">Download current list (.csv)</button>
+      <label class="plain" style="border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;background:#fff">Upload .csv / .txt<input type="file" id="in-file" accept=".csv,.txt,.tsv" class="hidden"></label>
+      <button class="plain" id="in-remove">Remove uploaded species</button>
+    </div>
+    <div id="in-status" class="small" style="margin-top:8px"></div>
+    <ul class="errlist" id="in-errs"></ul>
+    <div id="in-copy" class="hidden">
+      <p class="small">If the download didn't start (it's blocked in the claude.ai preview), copy this text into a file:</p>
+      <textarea id="in-copytext" readonly></textarea>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+// ===== Engine: structures, Lewis solver, graders =====
+const VAL = {H:1,B:3,C:4,N:5,O:6,F:7,Si:4,P:5,S:6,Cl:7,As:5,Se:6,Br:7,Te:6,I:7,Cr:6,Mn:7,Mo:6,W:6};
+const EN  = {H:2.20,B:2.04,C:2.55,N:3.04,O:3.44,F:3.98,Si:1.90,P:2.19,S:2.58,Cl:3.16,As:2.18,Se:2.55,Br:2.96,Te:2.10,I:2.66,Cr:1.66,Mn:1.55,Mo:2.16,W:2.36};
+const OTHER_ELEMENTS = ['Li','Na','K','Rb','Cs','Be','Mg','Ca','Sr','Ba','Al','Fe','Co','Ni','Cu','Zn','Ag','Au','Hg','Pb','Sn','Ti','V','Ga','Ge','Sb','Bi','Ne','Ar','He','Kr','Xe'];
+const SUBS = '₀₁₂₃₄₅₆₇₈₉', SUPS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+// ---------- formatting ----------
+function fmtU(f){
+  const k = f.indexOf('^');
+  let b = k < 0 ? f : f.slice(0,k), c = k < 0 ? null : f.slice(k+1);
+  let s = b.replace(/\d/g, d => SUBS[+d]);
+  if (c){
+    const m = c.match(/^(\d*)([+-])$/);
+    if (m) s += [...m[1]].map(x => SUPS[+x]).join('') + (m[2] === '-' ? '⁻' : '⁺');
+  }
+  return s;
+}
+function chargeText(q){ if (!q) return ''; const a = Math.abs(q); return (a > 1 ? a : '') + (q < 0 ? '−' : '+'); }
+function fcText(q){ return q > 0 ? '+' + q : '−' + (-q); }
+function dispFormula(it){ return fmtU(it.formula) + (it.kind !== 'anion' ? '(aq)' : ''); }
+
+// ---------- skeleton builders (math coords, bond length 1, y up) ----------
+function oxo(center, ligs, ang){
+  const n = ligs.length;
+  const A = ang || ({1:[180],2:[210,330],3:[90,210,330],4:[90,0,270,180]})[n];
+  const atoms = [{el:center,x:0,y:0}], bonds = [];
+  ligs.forEach((L,k) => {
+    const t = A[k]*Math.PI/180, dx = Math.cos(t), dy = Math.sin(t);
+    if (L.length > 1 && /H$/.test(L)){
+      atoms.push({el:L.slice(0,-1), x:dx, y:dy}); const oi = atoms.length-1; bonds.push([0,oi]);
+      atoms.push({el:'H', x:2*dx, y:2*dy}); bonds.push([oi, atoms.length-1]);
+    } else { atoms.push({el:L, x:dx, y:dy}); bonds.push([0, atoms.length-1]); }
+  });
+  return {atoms, bonds};
+}
+function chain(els){ return {atoms: els.map((el,i)=>({el, x:i, y:0})), bonds: els.slice(1).map((_,i)=>[i,i+1])}; }
+function manual(list, bonds){ return {atoms: list.map(([el,x,y])=>({el,x,y})), bonds}; }
+const SPECIALS = {
+  OH:   () => chain(['O','H']),
+  CN:   () => chain(['C','N']),
+  O2:   () => chain(['O','O']),
+  SCN:  () => chain(['S','C','N']),
+  HCN:  () => chain(['H','C','N']),
+  acetate: () => manual([['C',-1,0],['C',0,0],['O',0.5,0.87],['O',0.5,-0.87],['H',-1,1],['H',-2,0],['H',-1,-1]],
+                        [[0,1],[1,2],[1,3],[0,4],[0,5],[0,6]]),
+  acetic:  () => manual([['C',-1,0],['C',0,0],['O',0.5,0.87],['O',0.5,-0.87],['H',-1,1],['H',-2,0],['H',-1,-1],['H',1.5,-0.87]],
+                        [[0,1],[1,2],[1,3],[0,4],[0,5],[0,6],[3,7]]),
+  oxalate: () => manual([['C',-0.5,0],['C',0.5,0],['O',-1,0.87],['O',-1,-0.87],['O',1,0.87],['O',1,-0.87]],
+                        [[0,1],[0,2],[0,3],[1,4],[1,5]]),
+  oxalic:  () => manual([['C',-0.5,0],['C',0.5,0],['O',-1,0.87],['O',-1,-0.87],['O',1,0.87],['O',1,-0.87],['H',-2,-0.87],['H',2,-0.87]],
+                        [[0,1],[0,2],[0,3],[1,4],[1,5],[3,6],[5,7]]),
+  Cr2O7:   () => manual([['Cr',-1,0],['O',0,0],['Cr',1,0],['O',-1,1],['O',-2,0],['O',-1,-1],['O',1,1],['O',2,0],['O',1,-1]],
+                        [[0,1],[1,2],[0,3],[0,4],[0,5],[2,6],[2,7],[2,8]]),
+};
+function buildSkel(layout){
+  if (layout.special){ if (!SPECIALS[layout.special]) throw new Error('unknown layout ' + layout.special); return SPECIALS[layout.special](); }
+  return oxo(layout.center, layout.ligs, layout.ang);
+}
+function compOf(skel){ const c = {}; skel.atoms.forEach(a => c[a.el] = (c[a.el]||0) + 1); return c; }
+function compEq(a,b){ const k = new Set([...Object.keys(a),...Object.keys(b)]); for (const e of k) if ((a[e]||0) !== (b[e]||0)) return false; return true; }
+function compText(c){
+  const order = Object.keys(c).sort((x,y) => (x==='C'?-2:x==='H'?-1:0) - (y==='C'?-2:y==='H'?-1:0) || x.localeCompare(y));
+  return order.map(e => e + (c[e] > 1 ? c[e] : '')).join('');
+}
+
+// ---------- all-octet Lewis solver ----------
+function solveOctet(skel, charge){
+  const atoms = skel.atoms, B = skel.bonds;
+  for (const a of atoms) if (!(a.el in VAL)) return null;
+  const N = atoms.reduce((s,a) => s + VAL[a.el], 0) - charge;
+  const free = []; B.forEach((b,i) => { if (atoms[b[0]].el !== 'H' && atoms[b[1]].el !== 'H') free.push(i); });
+  const ord = B.map(() => 1); const all = [];
+  function evalCur(){
+    const bs = atoms.map(() => 0); B.forEach((b,i) => { bs[b[0]] += ord[i]; bs[b[1]] += ord[i]; });
+    const lp = [], fc = [];
+    for (let k = 0; k < atoms.length; k++){
+      const el = atoms[k].el;
+      if (el === 'H'){ if (bs[k] !== 1) return; lp.push(0); }
+      else { if (bs[k] > 4) return; lp.push(4 - bs[k]); }
+      fc.push(VAL[el] - 2*lp[k] - bs[k]);
+    }
+    const tot = 2*ord.reduce((s,o)=>s+o,0) + 2*lp.reduce((s,x)=>s+x,0);
+    if (tot !== N) return;
+    all.push({ord: ord.slice(), lp, fc,
+      sumAbs: fc.reduce((s,f)=>s+Math.abs(f),0),
+      en: fc.reduce((s,f,k)=>s + f*EN[atoms[k].el], 0)});
+  }
+  (function rec(i){ if (i === free.length){ evalCur(); return; } for (let o = 1; o <= 3; o++){ ord[free[i]] = o; rec(i+1); } ord[free[i]] = 1; })(0);
+  if (!all.length) return null;
+  let best = all[0];
+  for (const r of all) if (r.sumAbs < best.sumAbs || (r.sumAbs === best.sumAbs && r.en < best.en - 1e-9)) best = r;
+  const nBest = all.filter(r => r.sumAbs === best.sumAbs && Math.abs(r.en - best.en) < 1e-9).length;
+  return {best, N, minAbs: best.sumAbs, bestEn: best.en, nBest};
+}
+
+// ---------- formula parsing ----------
+function parseBody(s){
+  if (!s) return {err:'Type a formula.'};
+  let i = 0; const stack = [{}];
+  const add = (o,e,n) => { o[e] = (o[e]||0) + n; };
+  while (i < s.length){
+    const c = s[i];
+    if (c === ' '){ i++; continue; }
+    if (c === '(' || c === '['){ stack.push({}); i++; continue; }
+    if (c === ')' || c === ']'){
+      if (stack.length < 2) return {err:'There is a closing parenthesis with no opening one.'};
+      i++; let n = ''; while (/\d/.test(s[i]||'')) n += s[i++];
+      const top = stack.pop(), k = n ? +n : 1;
+      for (const e in top) add(stack[stack.length-1], e, top[e]*k);
+      continue;
+    }
+    if (/[A-Z]/.test(c)){
+      let e = c; i++;
+      if (/[a-z]/.test(s[i]||'')){ e += s[i]; i++; }
+      if (!(e in VAL) && !OTHER_ELEMENTS.includes(e)){
+        if (e.length === 2 && (e[0] in VAL)) return {err:`"${e}" isn't an element symbol. (Element symbols are one capital letter, or a capital and a lowercase letter.)`};
+        return {err:`"${e}" isn't an element symbol. Check capital letters: Cl, not CL or cl.`};
+      }
+      let n = ''; while (/\d/.test(s[i]||'')) n += s[i++];
+      add(stack[stack.length-1], e, n ? +n : 1); continue;
+    }
+    if (/[a-z]/.test(c)) return {err:'Element symbols start with a capital letter (Cl, not cl).'};
+    if (/\d/.test(c)) return {err:'Numbers go after an element symbol, as subscripts (H2SO4).'};
+    return {err:`The character "${c}" can't be read in a formula.`};
+  }
+  if (stack.length > 1) return {err:'A parenthesis is not closed.'};
+  if (!Object.keys(stack[0]).length) return {err:'Type a formula.'};
+  return stack[0];
+}
+function parseFormula(raw){
+  let s = String(raw||'').trim();
+  s = s.replace(/[₀-₉]/g, c => SUBS.indexOf(c));
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]*)([⁺⁻])\s*$/, (m,d,sg) => '^' + [...d].map(c => SUPS.indexOf(c)).join('') + (sg === '⁺' ? '+' : '-'));
+  s = s.replace(/[−–—]/g, '-').replace(/\((aq|g|l|s)\)/gi, '').replace(/\s+(ion|anion)$/i, '').trim();
+  if (!s) return {err:'Type a formula.'};
+  let charge = 0, body = s, alt = null, explicit = false, m;
+  if ((m = s.match(/^(.*?)\s*\^\s*(\d*)\s*([+-])$/))){ body = m[1]; charge = (m[2] ? +m[2] : 1)*(m[3]==='-'?-1:1); explicit = true; }
+  else if ((m = s.match(/^(.*\S)\s+(\d*)([+-])$/))){ body = m[1]; charge = (m[2] ? +m[2] : 1)*(m[3]==='-'?-1:1); explicit = true; }
+  else if ((m = s.match(/^(.*?)([+-])$/))){
+    body = m[1]; charge = m[2] === '-' ? -1 : 1;
+    if (/[A-Za-z)\]]\d+$/.test(body)){ const d = +body.slice(-1); if (d > 1) alt = {body: body.slice(0,-1), charge: d*charge}; }
+  }
+  else if (/\^/.test(s)) return {err:'After ^, type the charge, e.g. ^2- or ^-.'};
+  body = body.trim();
+  const comp = parseBody(body); if (comp.err) return comp;
+  const res = {comp, charge, body, explicit};
+  if (alt){ const c2 = parseBody(alt.body); if (!c2.err) res.alt = {comp:c2, charge:alt.charge, body:alt.body}; }
+  return res;
+}
+function readsAs(p){
+  if (p.err) return '';
+  return fmtU(compTextOrdered(p.body) + (p.charge ? '^' + (Math.abs(p.charge) > 1 ? Math.abs(p.charge) : '') + (p.charge < 0 ? '-' : '+') : ''));
+}
+function compTextOrdered(body){ return body.replace(/\s+/g,''); }
+
+// ---------- species preparation ----------
+function prepareSpecies(raw){
+  const it = Object.assign({}, raw);
+  const p = parseFormula(it.formula);
+  if (p.err) throw new Error('formula: ' + p.err);
+  it.charge = p.charge;
+  it.skel = buildSkel(it.layout);
+  it.comp = compOf(it.skel);
+  if (!compEq(it.comp, p.comp)) throw new Error(`layout atoms (${compText(it.comp)}) don't match formula ${it.formula}`);
+  const sol = solveOctet(it.skel, it.charge);
+  if (!sol) throw new Error('no all-octet Lewis structure fits this skeleton and charge');
+  Object.assign(it, {key: sol.best, N: sol.N, minAbs: sol.minAbs, bestEn: sol.bestEn, nBest: sol.nBest});
+  if (it.kind === 'anion' && it.charge >= 0) throw new Error('an anion needs a negative charge');
+  if (it.kind !== 'anion' && it.charge !== 0) throw new Error('acids must be neutral');
+  const n0 = it.names[0];
+  it.nO = it.comp.O || 0; it.nH = it.comp.H || 0;
+  it.family = it.family || it.layout.center || it.layout.special;
+  if (it.kind === 'anion') it.suf = /ate$/.test(n0) ? 'ate' : /ite$/.test(n0) ? 'ite' : /ide$/.test(n0) ? 'ide' : '';
+  else it.suf = /ic acid$/.test(n0) ? 'ic' : /ous acid$/.test(n0) ? 'ous' : '';
+  const core = n0.replace(/^(di|mono)?hydrogen\s*/,'');
+  it.pre = /^per(?!ox)/.test(core) ? 'per' : /^hypo/.test(core) ? 'hypo' : '';
+  if (!it.group) it.group = it.kind === 'binary' ? 'binary' : it.kind === 'oxoacid' ? 'oxoacid' : (it.nH ? 'hanion' : 'series');
+  return it;
+}
+function linkSpecies(list){
+  const nonH = c => { const o = Object.assign({}, c); delete o.H; return o; };
+  for (const a of list){ a.parent = null; }
+  for (const acid of list.filter(x => x.kind === 'oxoacid')){
+    const cands = list.filter(x => x.kind === 'anion' && compEq(nonH(x.comp), nonH(acid.comp)) && x.nH - x.charge === acid.nH).sort((x,y) => x.nH - y.nH);
+    if (cands.length){ acid.parent = cands[0]; if (!cands[0].acidItem) cands[0].acidItem = acid; }
+  }
+  for (const a of list.filter(x => x.kind === 'anion' && x.nH > 0)){
+    a.hparent = list.find(x => x.kind === 'anion' && x !== a && x.nH === 0 && compEq(nonH(x.comp), nonH(a.comp))) || null;
+  }
+  return list;
+}
+function ateOf(it, list){
+  return list.find(o => o.kind === 'anion' && o.family === it.family && o.suf === 'ate' && !o.pre && !o.nH) || null;
+}
+
+// ---------- name normalization & diagnosis ----------
+function normName(s){
+  return String(s||'').toLowerCase().replace(/\((aq)\)/g,'').replace(/\b(ion|anion)\b/g,'').replace(/[^a-z]/g,'');
+}
+const RULES = {
+  series: 'Oxoanion series: memorize the -ate ion (NO₃⁻, SO₄²⁻, PO₄³⁻, CO₃²⁻, ClO₃⁻). One fewer O → -ite. One more O → per-…-ate. Two fewer O → hypo-…-ite. The charge is the same across a series, and Br and I follow Cl.',
+  hanion: 'Adding H⁺ to an anion adds "hydrogen" to its name and raises the charge by 1 (two H⁺ → "dihydrogen"). The older prefix bi- means one H: bicarbonate = hydrogen carbonate.',
+  ide: 'A few polyatomic anions end in -ide, like monatomic anions do: hydroxide OH⁻, cyanide CN⁻, peroxide O₂²⁻.',
+  thio: 'Thio- means an S atom takes the place of an O: sulfate SO₄²⁻ → thiosulfate S₂O₃²⁻; cyanate OCN⁻ → thiocyanate SCN⁻.',
+  organic: 'Two carbon-containing anions to memorize: acetate C₂H₃O₂⁻ (CH₃COO⁻) and oxalate C₂O₄²⁻.',
+  metal: 'Transition-metal oxoanions to memorize: chromate CrO₄²⁻, dichromate Cr₂O₇²⁻, permanganate MnO₄⁻.',
+  binary: 'Binary acids (H plus one nonmetal, dissolved in water): hydro- + root of the nonmetal + -ic + acid. HCl(aq) → hydrochloric acid; H₂S(aq) → hydrosulfuric acid.',
+  hcn: 'HCN(aq) is named like a binary acid because its anion, cyanide, ends in -ide: hydro- + cyan + -ic acid.',
+  oxoacid: 'Oxoacids: start from the anion and change the ending: -ate → -ic acid, -ite → -ous acid. Keep per- and hypo-; never use hydro-. Add one H for each negative charge. Sulfur keeps "ur" (sulfuric, sulfurous); phosphorus gives phosphoric.',
+};
+function ruleFor(it){ return it.rule || RULES[it.group] || RULES[it.kind === 'binary' ? 'binary' : it.kind === 'oxoacid' ? 'oxoacid' : 'series']; }
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function explain(it, list){
+  const f = dispFormula(it), n0 = it.names[0];
+  if (it.explain) return it.explain;
+  if (it.group === 'series'){
+    const ate = ateOf(it, list);
+    if (!ate || ate === it) return `${f} is <b>${n0}</b>, one of the -ate ions to memorize.`;
+    const d = it.nO - ate.nO, af = fmtU(ate.formula);
+    if (d === 1)  return `${f} has one more O than ${ate.names[0]} (${af}), so it gets per-: <b>${n0}</b>.`;
+    if (d === -1) return `${f} has one fewer O than ${ate.names[0]} (${af}), so the ending is -ite: <b>${n0}</b>.`;
+    if (d === -2) return `${f} has two fewer O than ${ate.names[0]} (${af}), so it is hypo-…-ite: <b>${n0}</b>.`;
+  }
+  if (it.group === 'hanion' && it.hparent){
+    const p = it.hparent;
+    return `${fmtU(p.formula)} (${p.names[0]}) + ${it.nH === 1 ? '' : it.nH + ' '}H⁺ → ${f}: <b>${n0}</b>` + (it.names.length > 1 ? ` (also ${it.names.slice(1).join(', ')})` : '') + '.';
+  }
+  if (it.kind === 'binary' && it.anionName){
+    return `${fmtU(it.anionFormula)} is ${it.anionName}. Dissolved in water, ${f} is an acid: hydro- + ${it.root} + -ic acid → <b>${n0}</b>.`;
+  }
+  if (it.kind === 'oxoacid' && it.parent){
+    const p = it.parent, q = -p.charge;
+    return `Parent anion: ${p.names[0]} (${fmtU(p.formula)}). ${p.suf === 'ite' ? '-ite → -ous' : '-ate → -ic'}, and ${q} H⁺ cancel${q === 1 ? 's' : ''} the ${chargeText(p.charge)} charge → ${f}: <b>${n0}</b>.`;
+  }
+  return `${f} is <b>${n0}</b>. ${ruleFor(it)}`;
+}
+
+function compareTo(it, o){
+  if (o.family === it.family){
+    if (o.nO !== it.nO) return `That one has ${o.nO} O atom${o.nO===1?'':'s'}; this one has ${it.nO}.`;
+    if (o.nH !== it.nH) return `That one has ${o.nH} H atom${o.nH===1?'':'s'}; this one has ${it.nH}.`;
+  }
+  return 'Compare the formulas carefully.';
+}
+
+function diagnoseName(it, ans, list){
+  const bad = msg => ({ok:false, msg});
+  const a = normName(ans);
+  if (!a) return bad('Type a name first.');
+  const hit = it.names.find(n => normName(n) === a);
+  if (hit){
+    const others = it.names.filter(n => n !== hit);
+    return {ok:true, msg:`Correct: <b>${hit}</b>.` + (others.length ? ` Also called ${others.join(' or ')}.` : '')};
+  }
+  const isAcid = it.kind !== 'anion', hasAcid = /acid$/.test(a), body = hasAcid ? a.slice(0,-4) : a;
+  const other = list.find(o => o !== it && o.names.some(n => normName(n) === a));
+  const binLike = it.kind === 'binary';
+  if (isAcid && !hasAcid){
+    if (binLike && /^hydrogen/.test(body)) return bad(`"${esc(ans.trim())}" is the name of the pure compound. In water, ${dispFormula(it)} is named as an acid: hydro- + root + -ic acid.`);
+    if (binLike && it.anionName && normName(it.anionName) === body) return bad(`${cap(it.anionName)} is the anion ${fmtU(it.anionFormula)}. ${dispFormula(it)} is the acid, and acid names end in "acid".`);
+    if (other && other.kind === 'anion') return bad(`${cap(other.names[0])} is the anion ${fmtU(other.formula)}. This species is neutral, with H attached; in water it's an acid, so its name ends in "acid".`);
+    return bad('This is an acid: a neutral species with H in front, dissolved in water. Acid names end with the word "acid".');
+  }
+  if (!isAcid && hasAcid){
+    if (other) return bad(`${cap(other.names[0])} is ${dispFormula(other)}, a neutral acid. This species has a ${chargeText(it.charge)} charge, so it's an anion, and anion names don't include "acid".`);
+    return bad(`This species has a ${chargeText(it.charge)} charge, so it's an anion, not an acid. Anion names don't include "acid".`);
+  }
+  if (other) return bad(`${cap(other.names[0])} is ${dispFormula(other)}. ${compareTo(it, other)}`);
+  if (isAcid){
+    if (binLike && !/^hydro/.test(body)) return bad('Binary acids begin with hydro-: hydro- + root + -ic acid.');
+    if (!binLike && it.group !== 'hcn' && /^hydro/.test(body)) return bad('Oxoacids don\'t use hydro-. That prefix is only for acids with no oxygen (binary acids and HCN).');
+    if (it.group === 'hcn' && !/^hydro/.test(body)) return bad('HCN(aq) is named like a binary acid, so it begins with hydro-.');
+    if (/(ate|ite|ide)$/.test(body)) return bad('In an acid name the anion ending changes: -ate → -ic, -ite → -ous, -ide → hydro-…-ic.');
+    if (it.suf === 'ic' && /ous$/.test(body)) return bad(binLike ? 'Binary acids end in -ic.' : `The parent anion is ${it.parent ? it.parent.names[0] : 'an -ate ion'}, an -ate ion, so the acid ends in -ic, not -ous.`);
+    if (it.suf === 'ous' && /ic$/.test(body)) return bad(`The parent anion is ${it.parent ? it.parent.names[0] : 'an -ite ion'}, an -ite ion, so the acid ends in -ous, not -ic.`);
+  } else {
+    if (it.suf === 'ide' && /(ate|ite)$/.test(body)) return bad('This one is an exception: only a few polyatomic anions end in -ide (hydroxide, cyanide, peroxide).');
+    if (it.suf === 'ate' && /ite$/.test(body)) return bad(`-ite means one fewer O than the -ate ion. Count the O atoms: this one has ${it.nO}.`);
+    if (it.suf === 'ite' && /ate$/.test(body)) return bad(`Count the O atoms: this one has ${it.nO}. Is that the -ate ion, or one fewer?`);
+    if (it.suf !== 'ide' && /ide$/.test(body)) return bad('-ide is for monatomic anions (and hydroxide, cyanide, peroxide). An oxoanion ends in -ate or -ite.');
+    if (it.nH > 0 && !/hydrogen|^bi/.test(body)) return bad(`This anion still has ${it.nH === 1 ? 'one H' : 'two H atoms'} attached, and the name has to say so (${it.nH === 1 ? 'hydrogen' : 'dihydrogen'} …).`);
+    if (it.nH === 2 && !/dihydrogen/.test(body)) return bad('Two H atoms attached → dihydrogen.');
+    if (it.nH === 1 && /dihydrogen/.test(body)) return bad('Only one H is attached → hydrogen, not dihydrogen.');
+    if (it.nH === 0 && /hydrogen/.test(body)) return bad('This anion has no H atoms, so there is no "hydrogen" in its name.');
+  }
+  const core = body.replace(/^(di|mono)?hydrogen/,'').replace(/^bi/,'');
+  const cPer = /^per(?!ox)/.test(core), cHypo = /^hypo/.test(core);
+  const ate = ateOf(it.parent || it, list);
+  const ateTxt = ate ? ` (${ate.names[0]}, ${fmtU(ate.formula)})` : '';
+  if (it.pre === 'per' && !cPer) return bad(`This has one more O than the -ate ion${ateTxt}, so it takes the prefix per-.`);
+  if (it.pre === 'hypo' && !cHypo) return bad(`This has two fewer O than the -ate ion${ateTxt}, so it takes the prefix hypo-.`);
+  if (it.pre !== 'per' && cPer) return bad(`per- is only for one more O than the -ate ion${ateTxt}.`);
+  if (it.pre !== 'hypo' && cHypo) return bad(`hypo- is only for two fewer O than the -ate ion${ateTxt}.`);
+  if (/sulf(ic|ous)$/.test(body)) return bad('Sulfur acids keep the "ur": sulfuric, sulfurous, hydrosulfuric.');
+  if (/phosph(ic|ous)$/.test(body)) return bad('The phosphorus acid is phosphoric acid.');
+  return bad('Not quite. Check the root (it comes from the central element), any prefix, and the ending.');
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+
+// ---------- formula grading ----------
+function gradeFormula(it, text, list){
+  const bad = msg => ({ok:false, msg});
+  const p = parseFormula(text);
+  if (p.err) return bad(p.err);
+  const same = (c,q) => compEq(c, it.comp) && q === it.charge;
+  if (same(p.comp, p.charge)){
+    return {ok:true, msg:`Correct: ${dispFormula(it)}.` + (it.kind !== 'anion' ? ' (Writing (aq) is optional here.)' : '')};
+  }
+  if (p.alt && same(p.alt.comp, p.alt.charge)) return bad(`Did you mean ${fmtU(it.formula)}? Put the charge after ^ (type ${it.formula}). As typed, the last digit reads as a subscript.`);
+  const other = list.find(o => o !== it && compEq(o.comp, p.comp) && o.charge === p.charge);
+  if (other) return bad(`${dispFormula(other)} is ${other.names[0]}. ${compareTo(it, other)}`);
+  if (compEq(p.comp, it.comp)){
+    if (it.charge === 0) return bad('Right atoms, but an acid is a neutral molecule: no charge.');
+    if (p.charge === 0) return bad('Right atoms. An anion needs its charge: type it after ^, for example ^- or ^2-.');
+    return bad('Right atoms, wrong charge.' + (it.kind === 'anion' && it.nH ? ' Each H⁺ added to an anion raises its charge by 1.' : ''));
+  }
+  const need = Object.keys(it.comp), have = Object.keys(p.comp);
+  const missing = need.filter(e => !p.comp[e]), extra = have.filter(e => !it.comp[e]);
+  if (missing.length || extra.length){
+    let m = 'Check the elements.';
+    if (missing.length) m += ` Missing: ${missing.join(', ')}.`;
+    if (extra.length) m += ` Not in this species: ${extra.join(', ')}.`;
+    return bad(m);
+  }
+  const diffs = need.filter(e => p.comp[e] !== it.comp[e]);
+  if (diffs.length === 1 && diffs[0] === 'O'){
+    return bad(`Right elements, but the number of O atoms is off (you have ${p.comp.O}).` + (it.suf === 'ite' || it.suf === 'ous' ? ' -ite / -ous means one fewer O than the -ate ion.' : it.pre ? ' per- and hypo- change the O count relative to the -ate ion.' : ''));
+  }
+  if (diffs.length === 1 && diffs[0] === 'H'){
+    if (it.kind === 'oxoacid' || it.kind === 'binary') return bad(`Check the number of H atoms (you have ${p.comp.H}). An acid has one H for each negative charge on its anion.`);
+    return bad(`Check the number of H atoms (you have ${p.comp.H}): hydrogen = 1 H, dihydrogen = 2 H.`);
+  }
+  if (it.charge !== p.charge) return bad('Check the subscripts and the charge.');
+  return bad('Check the subscripts.');
+}
+
+// ---------- Lewis structure grading ----------
+function iso(elsA, adjA, elsB, adjB){
+  const n = elsA.length; if (n !== elsB.length) return null;
+  const dA = adjA.map(s => s.size), dB = adjB.map(s => s.size);
+  const order = [...Array(n).keys()].sort((x,y) => dA[y] - dA[x]);
+  const map = Array(n).fill(-1), inv = Array(n).fill(-1);
+  function bt(k){
+    if (k === n) return true;
+    const a = order[k];
+    for (let b = 0; b < n; b++){
+      if (inv[b] >= 0 || elsB[b] !== elsA[a] || dB[b] !== dA[a]) continue;
+      let ok = true;
+      for (const a2 of adjA[a]) if (map[a2] >= 0 && !adjB[b].has(map[a2])){ ok = false; break; }
+      if (ok) for (const b2 of adjB[b]) if (inv[b2] >= 0 && !adjA[a].has(inv[b2])){ ok = false; break; }
+      if (!ok) continue;
+      map[a] = b; inv[b] = a;
+      if (bt(k+1)) return true;
+      map[a] = -1; inv[b] = -1;
+    }
+    return false;
+  }
+  return bt(0) ? map : null;
+}
+function atomDesc(d, i){
+  const a = d.atoms[i];
+  const nb = d.bonds.filter(b => b.a === i || b.b === i).map(b => d.atoms[b.a === i ? b.b : b.a].el);
+  if (!nb.length) return `the unbonded ${a.el}`;
+  const cnt = {}; nb.forEach(e => cnt[e] = (cnt[e]||0)+1);
+  return `the ${a.el} bonded to ` + Object.keys(cnt).map(e => (cnt[e] > 1 ? cnt[e] + ' ' : '') + e).join(' and ');
+}
+function gradeLewis(it, d, list){
+  const bad = (msg, atoms) => ({ok:false, msg, bad: atoms || []});
+  const n = d.atoms.length;
+  if (!n) return bad('Draw the structure first: place atoms, bond them, then add lone pairs and formal charges.');
+  // 1. atoms
+  const comp = {}; d.atoms.forEach(a => comp[a.el] = (comp[a.el]||0)+1);
+  if (!compEq(comp, it.comp)){
+    const other = list.find(o => o !== it && compEq(o.comp, comp));
+    if (other) return bad(`Those atoms make ${dispFormula(other)} (${other.names[0]}). Check the formula of ${it.names[0]} first.`);
+    const els = new Set([...Object.keys(comp), ...Object.keys(it.comp)]);
+    const parts = [];
+    for (const e of els){ const h = comp[e]||0, w = it.comp[e]||0; if (h !== w) parts.push(`${e}: you have ${h}${w ? '' : ', but there is no ' + e + ' in this species'}`); }
+    return bad('Check your atoms. ' + parts.join('; ') + '. (Try typing the formula first if you\'re unsure.)');
+  }
+  // 2. connectivity
+  const adj = d.atoms.map(() => new Set()), bs = d.atoms.map(() => 0);
+  d.bonds.forEach(b => { adj[b.a].add(b.b); adj[b.b].add(b.a); bs[b.a] += b.order; bs[b.b] += b.order; });
+  const seen = new Set([0]), q = [0];
+  while (q.length){ const x = q.pop(); for (const y of adj[x]) if (!seen.has(y)){ seen.add(y); q.push(y); } }
+  if (seen.size < n){ const un = [...Array(n).keys()].filter(i => !seen.has(i)); return bad('Every atom has to be bonded into one structure. Some atoms aren\'t connected.', un); }
+  const hBad = [...Array(n).keys()].filter(i => d.atoms[i].el === 'H' && (adj[i].size !== 1 || bs[i] !== 1));
+  if (hBad.length) return bad('H forms only one single bond.', hBad);
+  // 3. skeleton
+  const kAt = it.skel.atoms, kAdj = kAt.map(() => new Set());
+  it.skel.bonds.forEach(([x,y]) => { kAdj[x].add(y); kAdj[y].add(x); });
+  const map = iso(d.atoms.map(a => a.el), adj, kAt.map(a => a.el), kAdj);
+  if (!map){
+    const keyHonO = kAt.every((a,i) => a.el !== 'H' || [...kAdj[i]].every(j => kAt[j].el === 'O'));
+    const hWrong = [...Array(n).keys()].filter(i => d.atoms[i].el === 'H' && [...adj[i]].some(j => d.atoms[j].el !== 'O'));
+    if (keyHonO && hWrong.length) return bad('In oxoacids and hydrogen anions, each H is bonded to an O atom, not to the central atom.', hWrong);
+    const keyOO = it.skel.bonds.some(([x,y]) => kAt[x].el === 'O' && kAt[y].el === 'O');
+    const oo = d.bonds.filter(b => d.atoms[b.a].el === 'O' && d.atoms[b.b].el === 'O');
+    if (!keyOO && oo.length) return bad('The O atoms in this species are not bonded to each other. Bond each O to the central atom.', [...new Set(oo.flatMap(b => [b.a,b.b]))]);
+    let ci = 0; kAdj.forEach((s,i) => { if (s.size > kAdj[ci].size) ci = i; });
+    const cEl = kAt[ci].el, cDeg = kAdj[ci].size;
+    const dc = [...Array(n).keys()].filter(i => d.atoms[i].el === cEl);
+    if (!dc.some(i => adj[i].size === cDeg)) return bad(`Check the skeleton. In this species a ${cEl} atom is bonded to ${cDeg} other atoms.`, dc);
+    return bad('Check the skeleton: which atom is bonded to which? The atom that appears once (not O or H) is usually in the center.');
+  }
+  // 4. overall charge
+  if (d.charge !== it.charge){
+    if (it.charge === 0) return bad('Acids are neutral molecules. Set the overall charge to 0 (no brackets).');
+    if (d.charge === 0) return bad('This is an ion. Set its overall charge (the box under the drawing) so it is drawn in brackets with its charge.');
+    return bad(`The overall charge isn't right for ${it.names[0]}.`);
+  }
+  // 5. electrons
+  const tot = 2*d.bonds.reduce((s,b) => s + b.order, 0) + 2*d.atoms.reduce((s,a) => s + a.lp, 0);
+  if (tot !== it.N){
+    const cnt = it.comp, parts = Object.keys(cnt).map(e => (cnt[e] > 1 ? cnt[e] + '×' : '') + e + '(' + VAL[e] + ')');
+    const qtxt = it.charge ? ` + ${-it.charge} for the ${chargeText(it.charge)} charge` : '';
+    return bad(`Your structure shows ${tot} valence electrons; it needs ${it.N}: ${parts.join(' + ')}${qtxt} = ${it.N}. (Each bond line = 2 e⁻, each lone pair = 2 e⁻.)`);
+  }
+  // 6. octets
+  const eAround = i => 2*bs[i] + 2*d.atoms[i].lp;
+  const octBad = [...Array(n).keys()].filter(i => eAround(i) !== (d.atoms[i].el === 'H' ? 2 : 8));
+  if (octBad.length){
+    const i0 = octBad[0], e0 = eAround(i0);
+    let m = `Every atom except H needs an octet (8 e⁻). ${cap(atomDesc(d, i0))} has ${e0}.`;
+    if (octBad.some(i => eAround(i) > 8)) m += ' This tool uses all-octet structures: no expanded octets. Use single bonds and formal charges instead of extra double bonds.';
+    else m += ' Move lone pairs into bonds, or add lone pairs, until each atom has 8.';
+    return bad(m, octBad);
+  }
+  // 7. formal charges
+  const fc = d.atoms.map((a,i) => VAL[a.el] - 2*a.lp - bs[i]);
+  const fcBad = [...Array(n).keys()].filter(i => fc[i] !== d.atoms[i].fc);
+  if (fcBad.length){
+    const i0 = fcBad[0];
+    return bad(`Check the formal charges. ${cap(atomDesc(d, i0))} should be ${fc[i0] ? fcText(fc[i0]) : '0'} (you marked ${d.atoms[i0].fc ? fcText(d.atoms[i0].fc) : 'none'}). Formal charge = valence e⁻ − lone-pair e⁻ − bonds.` + (fcBad.length > 1 ? ` ${fcBad.length} atoms need fixing (circled).` : ''), fcBad);
+  }
+  // 8. best form
+  const sumAbs = fc.reduce((s,f) => s + Math.abs(f), 0);
+  if (sumAbs > it.minAbs) return bad(`This is a valid all-octet Lewis structure, but not the best one: another arrangement of bonds gives smaller formal charges (yours add up to ${sumAbs} in size; the best is ${it.minAbs}).`);
+  const en = fc.reduce((s,f,i) => s + f*EN[d.atoms[i].el], 0);
+  let msg = 'Correct Lewis structure!';
+  if (en > it.bestEn + 1e-9) msg += ' (It\'s acceptable, but the preferred form puts the negative formal charge on the more electronegative atom.)';
+  else if (it.nBest > 1) msg += ` ${cap(it.names[0])} has ${it.nBest} equivalent resonance structures; you drew one of them.`;
+  return {ok:true, msg, bad:[]};
+}
+
+if (typeof module !== 'undefined') module.exports = {VAL, EN, fmtU, chargeText, dispFormula, parseFormula, readsAs, prepareSpecies, linkSpecies, solveOctet, diagnoseName, gradeFormula, gradeLewis, explain, ruleFor, normName, compEq, compText, buildSkel, ateOf, RULES};
+
+// ===== Built-in species =====
+const RAW_SPECIES = [];
+function A(id, formula, names, layout, extra){ RAW_SPECIES.push(Object.assign({id, kind:'anion', formula, names, layout}, extra||{})); }
+function BA(id, formula, names, layout, anionFormula, anionName, root, extra){ RAW_SPECIES.push(Object.assign({id, kind:'binary', formula, names, layout, anionFormula, anionName, root}, extra||{})); }
+function OA(id, formula, names, layout, extra){ RAW_SPECIES.push(Object.assign({id, kind:'oxoacid', formula, names, layout}, extra||{})); }
+const L = (center, ligs, ang) => ({center, ligs, ang});
+
+// --- polyatomic anions: oxoanion series ---
+A('NO3', 'NO3^-',  ['nitrate'],  L('N',['O','O','O']));
+A('NO2', 'NO2^-',  ['nitrite'],  L('N',['O','O']));
+A('SO4', 'SO4^2-', ['sulfate'],  L('S',['O','O','O','O']));
+A('SO3', 'SO3^2-', ['sulfite'],  L('S',['O','O','O']));
+A('PO4', 'PO4^3-', ['phosphate'],L('P',['O','O','O','O']));
+A('CO3', 'CO3^2-', ['carbonate'],L('C',['O','O','O']));
+for (const [X, r] of [['Cl','chlor'],['Br','brom'],['I','iod']]){
+  A(X+'O4', X+'O4^-', ['per'+r+'ate'], L(X,['O','O','O','O']));
+  A(X+'O3', X+'O3^-', [r+'ate'],       L(X,['O','O','O']));
+  A(X+'O2', X+'O2^-', [r+'ite'],       L(X,['O','O']));
+  A(X+'O',  X+'O^-',  ['hypo'+r+'ite'],L(X,['O'],[0]));
+}
+// --- hydrogen anions ---
+A('HCO3', 'HCO3^-',  ['hydrogen carbonate','bicarbonate'], L('C',['O','O','OH']));
+A('HSO4', 'HSO4^-',  ['hydrogen sulfate','bisulfate'],     L('S',['O','O','O','OH']));
+A('HSO3', 'HSO3^-',  ['hydrogen sulfite','bisulfite'],     L('S',['O','O','OH']));
+A('HPO4', 'HPO4^2-', ['hydrogen phosphate','monohydrogen phosphate'], L('P',['O','O','O','OH']));
+A('H2PO4','H2PO4^-', ['dihydrogen phosphate'],             L('P',['O','O','OH','OH']));
+// --- other common anions ---
+A('OH',   'OH^-',     ['hydroxide'],  {special:'OH'},  {group:'ide', family:'OH'});
+A('CN',   'CN^-',     ['cyanide'],    {special:'CN'},  {group:'ide', family:'CN'});
+A('O2',   'O2^2-',    ['peroxide'],   {special:'O2'},  {group:'ide', family:'O2'});
+A('SCN',  'SCN^-',    ['thiocyanate'],{special:'SCN'}, {group:'thio', family:'SCN',
+   explain:'SCN⁻ is cyanate (OCN⁻) with S in place of O: <b>thiocyanate</b>.'});
+A('S2O3', 'S2O3^2-',  ['thiosulfate'],L('S',['S','O','O','O']), {group:'thio', family:'S2O3',
+   explain:'S₂O₃²⁻ is sulfate (SO₄²⁻) with one O replaced by S: <b>thiosulfate</b>.'});
+A('C2H3O2','C2H3O2^-',['acetate','ethanoate'], {special:'acetate'}, {group:'organic', family:'acetate',
+   explain:'C₂H₃O₂⁻ (CH₃COO⁻) is <b>acetate</b>, one of the carbon-containing anions to memorize. (IUPAC name: ethanoate.)'});
+A('C2O4', 'C2O4^2-',  ['oxalate'],    {special:'oxalate'}, {group:'organic', family:'oxalate',
+   explain:'C₂O₄²⁻ is <b>oxalate</b>, one of the carbon-containing anions to memorize.'});
+A('CrO4', 'CrO4^2-',  ['chromate'],   L('Cr',['O','O','O','O']), {group:'metal',
+   explain:'CrO₄²⁻ is <b>chromate</b>, a transition-metal oxoanion to memorize.'});
+A('Cr2O7','Cr2O7^2-', ['dichromate'], {special:'Cr2O7'}, {group:'metal', family:'Cr2O7',
+   explain:'Cr₂O₇²⁻ is <b>dichromate</b>: two chromate units sharing one O.'});
+A('MnO4', 'MnO4^-',   ['permanganate'],L('Mn',['O','O','O','O']), {group:'metal',
+   explain:'MnO₄⁻ is <b>permanganate</b>, a transition-metal oxoanion to memorize.'});
+
+// --- binary acids (named in water) ---
+BA('HF',  'HF',  ['hydrofluoric acid'], L('F',['H']),  'F^-',  'fluoride', 'fluor');
+BA('HCl', 'HCl', ['hydrochloric acid'], L('Cl',['H']), 'Cl^-', 'chloride', 'chlor');
+BA('HBr', 'HBr', ['hydrobromic acid'],  L('Br',['H']), 'Br^-', 'bromide',  'brom');
+BA('HI',  'HI',  ['hydroiodic acid','hydriodic acid'], L('I',['H']), 'I^-', 'iodide', 'iod');
+BA('H2S', 'H2S', ['hydrosulfuric acid'],L('S',['H','H']), 'S^2-', 'sulfide', 'sulfur');
+BA('HCN', 'HCN', ['hydrocyanic acid'],  {special:'HCN'}, 'CN^-', 'cyanide', 'cyan', {group:'hcn', family:'CN'});
+
+// --- oxoacids ---
+OA('HNO3',  'HNO3',  ['nitric acid'],     L('N',['O','O','OH']));
+OA('HNO2',  'HNO2',  ['nitrous acid'],    L('N',['OH','O']));
+OA('H2SO4', 'H2SO4', ['sulfuric acid'],   L('S',['O','OH','O','OH']));
+OA('H2SO3', 'H2SO3', ['sulfurous acid'],  L('S',['O','OH','OH']));
+OA('H3PO4', 'H3PO4', ['phosphoric acid'], L('P',['O','OH','OH','OH']));
+OA('H2CO3', 'H2CO3', ['carbonic acid'],   L('C',['O','OH','OH']));
+for (const [X, r] of [['Cl','chlor'],['Br','brom'],['I','iod']]){
+  OA('H'+X+'O4', 'H'+X+'O4', ['per'+r+'ic acid'],  L(X,['O','O','O','OH']));
+  OA('H'+X+'O3', 'H'+X+'O3', [r+'ic acid'],        L(X,['O','O','OH']));
+  OA('H'+X+'O2', 'H'+X+'O2', [r+'ous acid'],       L(X,['OH','O']));
+  OA('H'+X+'O',  'H'+X+'O',  ['hypo'+r+'ous acid'],L(X,['OH']));
+}
+OA('H2CrO4',  'H2CrO4',  ['chromic acid'],      L('Cr',['O','OH','O','OH']));
+OA('HMnO4',   'HMnO4',   ['permanganic acid'],  L('Mn',['O','O','O','OH']));
+OA('HC2H3O2', 'HC2H3O2', ['acetic acid','ethanoic acid'], {special:'acetic'}, {family:'acetate'});
+OA('H2C2O4',  'H2C2O4',  ['oxalic acid'],       {special:'oxalic'}, {family:'oxalate'});
+
+// ===== UI =====
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const COLORS = {O:'#c0392b', N:'#2457c5', S:'#a87800', P:'#c35a00', Cl:'#1e7d46', Br:'#8a3b12', I:'#6b2fa0', F:'#1e7d46', H:'#55606f', C:'#1d2433', Cr:'#5a6b7f', Mn:'#7a4a9e', Se:'#a87800'};
+const STORE_KEY = 'polyacid.uploads.v1';
+function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch(e){ return null; } }
+
+let LIST = [];
+function loadSpecies(){
+  const byId = new Map();
+  RAW_SPECIES.forEach(r => byId.set(r.id, r));
+  let up = [];
+  try { up = JSON.parse(store(STORE_KEY) || '[]'); } catch(e){ up = []; }
+  up.forEach(r => byId.set(r.id, r));
+  const out = [];
+  for (const r of byId.values()){ try { out.push(prepareSpecies(r)); } catch(e){ console.warn(r.id, e.message); } }
+  LIST = linkSpecies(out);
+  LIST.uploaded = up.length;
+}
+
+// ---------- SVG rendering ----------
+function mk(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function angDist(a,b){ let d = Math.abs(a-b) % 360; return d > 180 ? 360 - d : d; }
+function pickDirs(occupied, k, cands){
+  const out = [], occ = occupied.slice();
+  for (let n = 0; n < k; n++){
+    let best = null, bs = -1;
+    for (const c of cands){ if (out.includes(c)) continue; const s = occ.length ? Math.min(...occ.map(o => angDist(o,c))) : 999; if (s > bs + 0.01){ bs = s; best = c; } }
+    out.push(best); occ.push(best);
+  }
+  return out;
+}
+// S: {atoms:[{el,x,y,lp,fc}], bonds:[{a,b,order}], charge}; coords in px (y down)
+function renderStruct(svg, S, opt = {}){
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  const g = mk('g', {}, svg);
+  const bad = new Set(opt.bad || []);
+  const R = 13;
+  const bondAng = S.atoms.map(() => []);
+  S.bonds.forEach(b => {
+    const A = S.atoms[b.a], B = S.atoms[b.b];
+    bondAng[b.a].push(Math.atan2(B.y - A.y, B.x - A.x)*180/Math.PI);
+    bondAng[b.b].push(Math.atan2(A.y - B.y, A.x - B.x)*180/Math.PI);
+  });
+  for (const i of bad){ const a = S.atoms[i]; if (a) mk('circle', {cx:a.x, cy:a.y, r:22, fill:'#fdecea', stroke:'#b3261e', 'stroke-width':2}, g); }
+  if (opt.sel != null && S.atoms[opt.sel]){ const a = S.atoms[opt.sel]; mk('circle', {cx:a.x, cy:a.y, r:20, fill:'#e8eefc', stroke:'#2457c5', 'stroke-width':1.5}, g); }
+  S.bonds.forEach(b => {
+    const A = S.atoms[b.a], B = S.atoms[b.b];
+    const dx = B.x - A.x, dy = B.y - A.y, L = Math.hypot(dx,dy) || 1, ux = dx/L, uy = dy/L, px = -uy, py = ux;
+    if (L < 2*R + 2) return;
+    const x1 = A.x + ux*R, y1 = A.y + uy*R, x2 = B.x - ux*R, y2 = B.y - uy*R;
+    const offs = b.order === 1 ? [0] : b.order === 2 ? [-3.6, 3.6] : [-5.5, 0, 5.5];
+    for (const o of offs) mk('line', {x1:x1+px*o, y1:y1+py*o, x2:x2+px*o, y2:y2+py*o, stroke:'#1d2433', 'stroke-width':2.2, 'stroke-linecap':'round'}, g);
+  });
+  const lpC = [270, 0, 90, 180]; for (let d = 0; d < 360; d += 15) if (d % 90) lpC.push(d);
+  S.atoms.forEach((a,i) => {
+    const t = mk('text', {x:a.x, y:a.y, 'text-anchor':'middle', 'dominant-baseline':'central', 'font-size':21, 'font-weight':600, fill: COLORS[a.el] || '#1d2433', 'font-family':'system-ui,sans-serif'}, g);
+    t.textContent = a.el;
+    const occ = bondAng[i].map(x => (x + 360) % 360);
+    const lpd = pickDirs(occ, a.lp || 0, lpC);
+    const rr = a.el.length > 1 ? 19 : 16;
+    lpd.forEach(d => {
+      const t2 = d*Math.PI/180, cx = a.x + Math.cos(t2)*rr, cy = a.y + Math.sin(t2)*rr, qx = -Math.sin(t2)*4.2, qy = Math.cos(t2)*4.2;
+      mk('circle', {cx:cx+qx, cy:cy+qy, r:2.3, fill:'#1d2433'}, g);
+      mk('circle', {cx:cx-qx, cy:cy-qy, r:2.3, fill:'#1d2433'}, g);
+    });
+    if (a.fc){
+      const d = pickDirs(occ.concat(lpd), 1, [315, 45, 225, 135, 270, 90, 0, 180])[0];
+      const t3 = d*Math.PI/180, fx = a.x + Math.cos(t3)*26, fy = a.y + Math.sin(t3)*26;
+      mk('circle', {cx:fx, cy:fy, r:9.5, fill:'#fff', stroke: a.fc > 0 ? '#2457c5' : '#b3261e', 'stroke-width':1.3}, g);
+      const ft = mk('text', {x:fx, y:fy+0.5, 'text-anchor':'middle', 'dominant-baseline':'central', 'font-size':11.5, 'font-weight':700, fill: a.fc > 0 ? '#2457c5' : '#b3261e', 'font-family':'system-ui,sans-serif'}, g);
+      ft.textContent = (Math.abs(a.fc) > 1 ? Math.abs(a.fc) : '') + (a.fc > 0 ? '+' : '−');
+    }
+  });
+  if (!S.atoms.length && opt.empty){
+    const t = mk('text', {x:350, y:195, 'text-anchor':'middle', 'font-size':16, fill:'#8a93a5'}, g); t.textContent = opt.empty;
+  }
+  let box = null;
+  if (S.atoms.length){
+    const xs = S.atoms.map(a => a.x), ys = S.atoms.map(a => a.y);
+    box = {x0: Math.min(...xs) - 40, x1: Math.max(...xs) + 40, y0: Math.min(...ys) - 40, y1: Math.max(...ys) + 40};
+    if (S.charge){
+      const {x0,x1,y0,y1} = box, w = 8;
+      mk('path', {d:`M${x0+w},${y0} H${x0} V${y1} H${x0+w}`, fill:'none', stroke:'#1d2433', 'stroke-width':2}, g);
+      mk('path', {d:`M${x1-w},${y0} H${x1} V${y1} H${x1-w}`, fill:'none', stroke:'#1d2433', 'stroke-width':2}, g);
+      const ct = mk('text', {x:x1+4, y:y0+4, 'font-size':18, 'font-weight':700, fill:'#1d2433', 'font-family':'system-ui,sans-serif'}, g);
+      ct.textContent = chargeText(S.charge);
+      box.x1 += 30;
+    }
+  }
+  if (opt.temp) mk('line', Object.assign({stroke:'#2457c5', 'stroke-width':2, 'stroke-dasharray':'5 4'}, opt.temp), g);
+  if (opt.fit && box){
+    const pad = 10, w = box.x1 - box.x0 + 2*pad, h = box.y1 - box.y0 + 2*pad;
+    const W = Math.max(w, opt.minW || 440), H = Math.max(h, opt.minH || 250);
+    const cx = (box.x0 + box.x1)/2, cy = (box.y0 + box.y1)/2;
+    svg.setAttribute('viewBox', `${cx - W/2} ${cy - H/2} ${W} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  }
+}
+function keyDraw(it, scale = 58){
+  return {atoms: it.skel.atoms.map((a,i) => ({el:a.el, x:a.x*scale, y:-a.y*scale, lp:it.key.lp[i], fc:it.key.fc[i]})),
+          bonds: it.skel.bonds.map(([a,b],i) => ({a, b, order: it.key.ord[i]})), charge: it.charge};
+}
+
+// ---------- shared panel state ----------
+const CATS = [['all','All'],['anion','Polyatomic anions'],['binary','Binary acids'],['oxoacid','Oxoacids']];
+const ST = {filter:{s2n: store('polyacid.f.s2n') || 'all', n2s: store('polyacid.f.n2s') || 'all'}, cur:{}, tries:{}, score:{s2n:{t:new Set(), s:new Set()}, n2s:{t:new Set(), s:new Set()}}, mode:'formula', promptName:''};
+function pool(p){ const f = ST.filter[p]; return LIST.filter(x => f === 'all' || x.kind === f); }
+function pick(p){ const P = pool(p); if (!P.length) return null; let c, n = 0; do { c = P[Math.floor(Math.random()*P.length)]; } while (P.length > 1 && c === ST.cur[p] && ++n < 20); return c; }
+function drawFilters(p){
+  const box = $('f-' + p); box.innerHTML = '';
+  CATS.forEach(([k, lab]) => {
+    const n = LIST.filter(x => k === 'all' || x.kind === k).length;
+    const b = document.createElement('button'); b.innerHTML = `${lab}<span class="n">${n}</span>`;
+    if (ST.filter[p] === k) b.className = 'on';
+    b.onclick = () => { ST.filter[p] = k; store('polyacid.f.' + p, k); drawFilters(p); (p === 's2n' ? s2nLoad : n2sLoad)(pick(p)); };
+    box.appendChild(b);
+  });
+}
+function updScore(p){ const s = ST.score[p]; $(p + '-score').textContent = `This session: ${s.s.size} solved of ${s.t.size} tried`; }
+function feedback(box, res, tries, rule, onShow, extraBtns){
+  box.className = 'fb ' + (res.ok ? 'ok' : 'bad');
+  let h = `<div>${res.msg}</div>`;
+  if (!res.ok && tries >= 2 && rule) h += `<div class="rule"><b>Rule:</b> ${rule}</div>`;
+  box.innerHTML = h;
+  if (!res.ok && tries >= 3 && onShow){ const b = document.createElement('button'); b.className = 'plain'; b.textContent = 'Show me'; b.onclick = onShow; box.appendChild(b); }
+  (extraBtns || []).forEach(([lab, fn, cls]) => { const b = document.createElement('button'); b.className = cls || 'plain'; b.textContent = lab; b.onclick = fn; box.appendChild(b); });
+}
+function clearFb(box){ box.className = 'fb'; box.innerHTML = ''; }
+
+// ---------- Structure → Name ----------
+function s2nLoad(it){
+  if (!it) return;
+  ST.cur.s2n = it; ST.tries.s2n = 0;
+  renderStruct($('s2n-svg'), keyDraw(it), {fit:true});
+  $('s2n-formula').textContent = $('s2n-showf').checked ? dispFormula(it) : '';
+  $('s2n-in').value = ''; clearFb($('s2n-fb'));
+}
+function s2nCheck(){
+  const it = ST.cur.s2n; if (!it) return;
+  const r = diagnoseName(it, $('s2n-in').value, LIST);
+  if (!$('s2n-in').value.trim()){ feedback($('s2n-fb'), r, 0); return; }
+  ST.score.s2n.t.add(it.id);
+  if (r.ok){ ST.score.s2n.s.add(it.id); feedback($('s2n-fb'), {ok:true, msg: r.msg + '<div class="small" style="margin-top:6px">' + explain(it, LIST) + '</div>'}, 0, null, null, [['Next structure →', () => s2nLoad(pick('s2n')), 'primary']]); }
+  else { ST.tries.s2n++; feedback($('s2n-fb'), r, ST.tries.s2n, ruleFor(it), () => {
+    const b = $('s2n-fb'); b.className = 'fb ok';
+    b.innerHTML = `<div>${explain(it, LIST)}</div>` + (it.names.length > 1 ? `<div class="small">Also accepted: ${it.names.slice(1).join(', ')}</div>` : '');
+    const nb = document.createElement('button'); nb.className = 'primary'; nb.textContent = 'Next structure →'; nb.onclick = () => s2nLoad(pick('s2n')); b.appendChild(nb);
+  }); }
+  updScore('s2n');
+}
+
+// ---------- Name → Structure ----------
+function n2sLoad(it){
+  if (!it) return;
+  ST.cur.n2s = it; ST.tries.n2sf = 0; ST.tries.n2sd = 0;
+  ST.promptName = it.names[Math.floor(Math.random()*it.names.length)];
+  $('n2s-name').textContent = ST.promptName;
+  $('n2s-fin').value = ''; $('n2s-reads').textContent = '';
+  clearFb($('n2s-fb')); $('n2s-show').classList.add('hidden');
+  edReset(); setMode(ST.mode);
+}
+function setMode(m){
+  ST.mode = m;
+  document.querySelectorAll('#n2s-mode button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  $('n2s-fbox').classList.toggle('hidden', m !== 'formula');
+  $('n2s-dbox').classList.toggle('hidden', m !== 'draw');
+  clearFb($('n2s-fb'));
+}
+function n2sShow(){
+  const it = ST.cur.n2s;
+  $('n2s-show').classList.remove('hidden');
+  renderStruct($('n2s-key'), keyDraw(it), {fit:true});
+  $('n2s-keytext').innerHTML = `<div style="font-size:19px;margin-bottom:4px"><b>${dispFormula(it)}</b></div><div>${explain(it, LIST)}</div>` +
+    (it.nBest > 1 ? `<div class="small">One of ${it.nBest} equivalent resonance structures is shown.</div>` : '');
+}
+function n2sFormulaCheck(){
+  const it = ST.cur.n2s; if (!it) return;
+  if (!$('n2s-fin').value.trim()) return;
+  ST.score.n2s.t.add(it.id);
+  const r = gradeFormula(it, $('n2s-fin').value, LIST);
+  if (r.ok){ ST.score.n2s.s.add(it.id); feedback($('n2s-fb'), r, 0, null, null, [['Now draw its Lewis structure →', () => setMode('draw')], ['Next name →', () => n2sLoad(pick('n2s')), 'primary']]); }
+  else { ST.tries.n2sf++; feedback($('n2s-fb'), r, ST.tries.n2sf, ruleFor(it), n2sShow); }
+  updScore('n2s');
+}
+function n2sDrawCheck(){
+  const it = ST.cur.n2s; if (!it) return;
+  ST.score.n2s.t.add(it.id);
+  const r = gradeLewis(it, {atoms: ED.atoms, bonds: ED.bonds, charge: ED.charge}, LIST);
+  ED.bad = r.bad || []; edRender();
+  if (r.ok){ ST.score.n2s.s.add(it.id); feedback($('n2s-fb'), r, 0, null, null, [['Next name →', () => n2sLoad(pick('n2s')), 'primary']]); }
+  else { ST.tries.n2sd++; feedback($('n2s-fb'), r, ST.tries.n2sd, lewisRule(r.msg) || ruleFor(it), n2sShow); }
+  updScore('n2s');
+}
+function lewisRule(msg){
+  if (/valence electrons/.test(msg)) return 'Total valence electrons = sum of the valence electrons of all atoms, + 1 for each negative charge (− 1 for each positive charge).';
+  if (/octet/.test(msg)) return 'Each atom other than H gets exactly 8 electrons (bonding pairs + lone pairs). H gets 2. Use single bonds to the central atom and formal charges rather than expanded octets.';
+  if (/formal charge/i.test(msg)) return 'Formal charge = valence electrons − lone-pair electrons − number of bonds. The formal charges add up to the overall charge.';
+  if (/skeleton|bonded to|bonded into/.test(msg)) return 'Skeleton: the central atom is bonded to every O. In acids and hydrogen anions, H atoms sit on O atoms.';
+  return null;
+}
+
+// ---------- Lewis editor ----------
+const ED = {atoms:[], bonds:[], charge:0, tool:'atom', el:'O', hist:[], bad:[], drag:null, move:null, temp:null};
+const TOOLS = [
+  ['atom', 'Atom', 'Click empty space to place the selected element. Click an atom to change it to the selected element.'],
+  ['bond', 'Bond', 'Drag from one atom to another to bond them (or drag to empty space to add a bonded atom). Click a bond to cycle single → double → triple.'],
+  ['lp+', 'Lone pair +', 'Click an atom to add a lone pair.'],
+  ['lp-', 'Lone pair −', 'Click an atom to remove a lone pair.'],
+  ['fc+', 'Charge +', 'Click an atom to raise its formal charge by 1.'],
+  ['fc-', 'Charge −', 'Click an atom to lower its formal charge by 1.'],
+  ['move', 'Move', 'Drag an atom to move it.'],
+  ['erase', 'Erase', 'Click an atom or a bond to delete it.'],
+];
+const PAL = ['H','C','N','O','F','P','S','Cl','Br','I','Cr','Mn'];
+function edSnap(){ ED.hist.push(JSON.stringify([ED.atoms, ED.bonds, ED.charge])); if (ED.hist.length > 150) ED.hist.shift(); }
+function edReset(){ ED.atoms = []; ED.bonds = []; ED.charge = 0; ED.hist = []; ED.bad = []; $('ed-charge').value = '0'; edRender(); }
+function edRender(){ renderStruct($('ed'), ED, {bad: ED.bad, temp: ED.temp, empty: 'Choose an element, then click here to place atoms.'}); }
+function edPt(e){ const svg = $('ed'), p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function hitAtom(p){ let best = -1, bd = 20; ED.atoms.forEach((a,i) => { const d = Math.hypot(a.x - p.x, a.y - p.y); if (d < bd){ bd = d; best = i; } }); return best; }
+function hitBond(p){
+  let best = -1, bd = 8;
+  ED.bonds.forEach((b,i) => {
+    const A = ED.atoms[b.a], B = ED.atoms[b.b], dx = B.x - A.x, dy = B.y - A.y, L2 = dx*dx + dy*dy || 1;
+    const t = Math.max(0, Math.min(1, ((p.x - A.x)*dx + (p.y - A.y)*dy)/L2));
+    const d = Math.hypot(p.x - (A.x + t*dx), p.y - (A.y + t*dy));
+    if (d < bd && t > 0.15 && t < 0.85){ bd = d; best = i; }
+  });
+  return best;
+}
+function findBond(a,b){ return ED.bonds.findIndex(x => (x.a === a && x.b === b) || (x.a === b && x.b === a)); }
+function delAtom(i){ ED.bonds = ED.bonds.filter(b => b.a !== i && b.b !== i).map(b => ({a: b.a > i ? b.a-1 : b.a, b: b.b > i ? b.b-1 : b.b, order: b.order})); ED.atoms.splice(i,1); }
+function addAtom(p){ ED.atoms.push({el: ED.el, x: Math.max(20, Math.min(680, p.x)), y: Math.max(20, Math.min(370, p.y)), lp:0, fc:0}); return ED.atoms.length - 1; }
+function edDown(e){
+  const svg = $('ed'); const p = edPt(e); const a = hitAtom(p); ED.bad = [];
+  try { svg.setPointerCapture(e.pointerId); } catch(_){}
+  const t = ED.tool;
+  if (t === 'atom'){ edSnap(); if (a >= 0) ED.atoms[a].el = ED.el; else addAtom(p); }
+  else if (t === 'bond'){
+    if (a >= 0){ ED.drag = {from:a, x:p.x, y:p.y}; }
+    else { const b = hitBond(p); if (b >= 0){ edSnap(); ED.bonds[b].order = ED.bonds[b].order % 3 + 1; } }
+  }
+  else if (t === 'lp+' || t === 'lp-' || t === 'fc+' || t === 'fc-'){
+    if (a >= 0){ edSnap(); const A = ED.atoms[a];
+      if (t === 'lp+') A.lp = Math.min(4, A.lp + 1); if (t === 'lp-') A.lp = Math.max(0, A.lp - 1);
+      if (t === 'fc+') A.fc = Math.min(3, A.fc + 1); if (t === 'fc-') A.fc = Math.max(-3, A.fc - 1); }
+  }
+  else if (t === 'move'){ if (a >= 0){ edSnap(); ED.move = a; } }
+  else if (t === 'erase'){
+    if (a >= 0){ edSnap(); delAtom(a); }
+    else { const b = hitBond(p); if (b >= 0){ edSnap(); ED.bonds.splice(b,1); } }
+  }
+  edRender();
+}
+function edMoveEv(e){
+  if (!ED.drag && ED.move == null) return;
+  const p = edPt(e);
+  if (ED.drag){ const A = ED.atoms[ED.drag.from]; ED.temp = {x1:A.x, y1:A.y, x2:p.x, y2:p.y}; }
+  if (ED.move != null){ ED.atoms[ED.move].x = Math.max(15, Math.min(685, p.x)); ED.atoms[ED.move].y = Math.max(15, Math.min(375, p.y)); }
+  edRender();
+}
+function edUp(e){
+  const p = edPt(e);
+  if (ED.drag){
+    const from = ED.drag.from, to = hitAtom(p);
+    if (to >= 0 && to !== from){ edSnap(); const k = findBond(from, to); if (k >= 0) ED.bonds[k].order = ED.bonds[k].order % 3 + 1; else ED.bonds.push({a:from, b:to, order:1}); }
+    else if (to < 0){
+      const A = ED.atoms[from];
+      if (Math.hypot(p.x - A.x, p.y - A.y) > 30){ edSnap(); const n = addAtom(p); ED.bonds.push({a:from, b:n, order:1}); }
+    }
+  }
+  ED.drag = null; ED.temp = null; ED.move = null; edRender();
+}
+function edGiveAtoms(){
+  const it = ST.cur.n2s; if (!it) return;
+  edSnap(); ED.atoms = []; ED.bonds = []; ED.bad = [];
+  const els = []; Object.keys(it.comp).forEach(e => { for (let k = 0; k < it.comp[e]; k++) els.push(e); });
+  els.sort(() => Math.random() - 0.5);
+  const n = els.length;
+  els.forEach((el, i) => { const t = 2*Math.PI*i/n; ED.atoms.push({el, x: 350 + 150*Math.cos(t), y: 195 + 130*Math.sin(t), lp:0, fc:0}); });
+  edRender();
+}
+function edInit(){
+  const tb = $('tools');
+  TOOLS.forEach(([k, lab, tip]) => {
+    const b = document.createElement('button'); b.className = 'tool' + (k === ED.tool ? ' on' : ''); b.textContent = lab; b.dataset.k = k;
+    b.onclick = () => { ED.tool = k; document.querySelectorAll('#tools .tool').forEach(x => x.classList.toggle('on', x.dataset.k === k)); $('tip').textContent = tip; };
+    tb.appendChild(b);
+  });
+  $('tip').textContent = TOOLS[0][2];
+  const pal = $('pal');
+  const selEl = el => { ED.el = el; document.querySelectorAll('#pal button').forEach(x => x.classList.toggle('on', x.textContent === el)); if (ED.tool !== 'atom' && ED.tool !== 'bond') document.querySelector('#tools .tool[data-k="atom"]').click(); };
+  PAL.forEach(el => { const b = document.createElement('button'); b.textContent = el; b.style.color = el === ED.el ? '' : (COLORS[el] || ''); b.onclick = () => selEl(el); if (el === ED.el) b.className = 'on'; pal.appendChild(b); });
+  const other = document.createElement('input'); other.placeholder = 'other'; other.title = 'Type another element symbol';
+  other.onchange = () => { const v = other.value.trim(); if (v in VAL){ ED.el = v; document.querySelectorAll('#pal button').forEach(x => x.classList.remove('on')); } else other.value = ''; };
+  pal.appendChild(other);
+  const svg = $('ed');
+  svg.addEventListener('pointerdown', edDown); svg.addEventListener('pointermove', edMoveEv); svg.addEventListener('pointerup', edUp); svg.addEventListener('pointercancel', edUp);
+  $('ed-charge').onchange = () => { edSnap(); ED.charge = +$('ed-charge').value; edRender(); };
+  $('ed-undo').onclick = () => { const s = ED.hist.pop(); if (!s) return; const o = JSON.parse(s); ED.atoms = o[0]; ED.bonds = o[1]; ED.charge = o[2]; $('ed-charge').value = String(ED.charge); ED.bad = []; edRender(); };
+  $('ed-clear').onclick = () => { edSnap(); ED.atoms = []; ED.bonds = []; ED.bad = []; edRender(); };
+  $('ed-atoms').onclick = edGiveAtoms;
+  $('ed-check').onclick = n2sDrawCheck;
+  edRender();
+}
+
+// ---------- Review ----------
+function reviewInit(){
+  const anions = LIST.filter(x => x.kind === 'anion');
+  const order = ['series','hanion','ide','thio','organic','metal'];
+  anions.sort((a,b) => (order.indexOf(a.group) - order.indexOf(b.group)));
+  let h = '<tr><th>Anion</th><th>Name</th><th>Acid</th><th>Acid name</th></tr>';
+  anions.forEach(a => {
+    const ac = a.acidItem;
+    h += `<tr class="click" data-a="${a.id}" data-b="${ac ? ac.id : ''}"><td>${fmtU(a.formula)}</td><td>${a.names.join(' / ')}</td><td>${ac ? dispFormula(ac) : '—'}</td><td>${ac ? ac.names.join(' / ') : '—'}</td></tr>`;
+  });
+  $('rv-table').innerHTML = h;
+  let hb = '<tr><th>Acid</th><th>Acid name</th><th>Anion</th><th>Anion name</th></tr>';
+  LIST.filter(x => x.kind === 'binary').forEach(b => {
+    const an = LIST.find(x => x.kind === 'anion' && x.formula === b.anionFormula);
+    hb += `<tr class="click" data-a="${b.id}" data-b="${an ? an.id : ''}"><td>${dispFormula(b)}</td><td>${b.names.join(' / ')}</td><td>${b.anionFormula ? fmtU(b.anionFormula) : '—'}</td><td>${b.anionName || '—'}</td></tr>`;
+  });
+  $('rv-btable').innerHTML = hb;
+  document.querySelectorAll('#tab-review tr.click').forEach(tr => tr.onclick = () => {
+    document.querySelectorAll('#tab-review tr.sel').forEach(x => x.classList.remove('sel')); tr.classList.add('sel');
+    const A = LIST.find(x => x.id === tr.dataset.a), B = LIST.find(x => x.id === tr.dataset.b);
+    $('rv-hint').classList.add('hidden'); $('rv-pair').classList.remove('hidden');
+    renderStruct($('rv-a'), keyDraw(A), {fit:true}); $('rv-acap').innerHTML = `${dispFormula(A)} · ${A.names[0]}`;
+    if (B){ $('rv-b').parentNode.classList.remove('hidden'); renderStruct($('rv-b'), keyDraw(B), {fit:true}); $('rv-bcap').innerHTML = `${dispFormula(B)} · ${B.names[0]}`; }
+    else $('rv-b').parentNode.classList.add('hidden');
+  });
+}
+
+// ---------- Instructor ----------
+const COLS = ['id','kind','formula','names','center','ligands','rule'];
+function csvCell(v){ v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; }
+function toCSV(rows){ return [COLS.join(',')].concat(rows.map(r => COLS.map(c => csvCell(r[c])).join(','))).join('\n') + '\n'; }
+function rowOf(r){ return {id:r.id, kind:r.kind, formula:r.formula, names:r.names.join('; '), center: r.layout.special ? 'built-in' : r.layout.center, ligands: r.layout.special ? '' : r.layout.ligs.join(' '), rule: r.rule || ''}; }
+function parseTable(text){
+  text = text.replace(/^﻿/, '');
+  const first = text.split(/\r?\n/)[0] || '', delim = first.includes('\t') ? '\t' : ',';
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){ if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else q = false; } else cell += c; continue; }
+    if (c === '"') q = true; else if (c === delim){ row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r'){ if (c === '\r' && text[i+1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += c;
+  }
+  if (cell || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+function download(name, text){
+  try { const blob = new Blob([text], {type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); } catch(e){}
+  $('in-copy').classList.remove('hidden'); $('in-copytext').value = text;
+}
+function handleUpload(text){
+  const rows = parseTable(text), errs = $('in-errs'); errs.innerHTML = '';
+  if (rows.length < 2){ $('in-status').textContent = 'The file has no data rows.'; return; }
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  const miss = ['id','kind','formula','names'].filter(c => !head.includes(c));
+  if (miss.length){ $('in-status').textContent = 'Missing column(s): ' + miss.join(', '); return; }
+  const col = c => head.indexOf(c);
+  const good = [], seen = new Set(); let nBad = 0;
+  rows.slice(1).forEach((r, k) => {
+    const get = c => col(c) >= 0 ? (r[col(c)] || '').trim() : '';
+    const line = k + 2, li = document.createElement('li'), id = get('id');
+    try {
+      if (!id) throw new Error('missing id');
+      if (seen.has(id)) throw new Error('duplicate id ' + id); seen.add(id);
+      const kind = get('kind').toLowerCase();
+      if (!['anion','binary','oxoacid'].includes(kind)) throw new Error('kind must be anion, binary or oxoacid');
+      const names = get('names').split(';').map(s => s.trim().toLowerCase()).filter(Boolean);
+      if (!names.length) throw new Error('missing names');
+      const center = get('center'); let layout;
+      if (!center || center.toLowerCase() === 'built-in'){
+        const b = RAW_SPECIES.find(x => x.id === id);
+        if (!b) throw new Error('"built-in" (or a blank center) only works for an id that is already built in');
+        layout = b.layout;
+      } else {
+        const ligs = get('ligands').split(/\s+/).filter(Boolean);
+        if (!(center in VAL)) throw new Error(`center "${center}" isn't an element the tool can draw`);
+        if (ligs.length < 1 || ligs.length > 4) throw new Error('ligands: give 1 to 4 atoms around the center');
+        for (const L0 of ligs){ const e = /H$/.test(L0) && L0.length > 1 ? L0.slice(0,-1) : L0; if (!(e in VAL)) throw new Error(`ligand "${L0}" isn't understood`); }
+        layout = {center, ligs};
+      }
+      const raw = {id, kind, formula: get('formula'), names, layout};
+      const base = RAW_SPECIES.find(x => x.id === id);
+      if (base){ ['anionFormula','anionName','root','group','family','explain'].forEach(f => { if (base[f] != null) raw[f] = base[f]; }); if (base.kind !== kind) { delete raw.group; delete raw.explain; } }
+      if (get('rule')) raw.rule = get('rule');
+      prepareSpecies(raw);
+      good.push(raw); li.className = 'ok'; li.textContent = `Row ${line} (${id}): OK — ${names[0]}`;
+    } catch(e){ nBad++; li.className = 'bad'; li.textContent = `Row ${line}${id ? ' (' + id + ')' : ''}: ${e.message}`; }
+    errs.appendChild(li);
+  });
+  if (good.length){
+    let prev = []; try { prev = JSON.parse(store(STORE_KEY) || '[]'); } catch(e){}
+    const m = new Map(prev.map(r => [r.id, r])); good.forEach(r => m.set(r.id, r));
+    store(STORE_KEY, JSON.stringify([...m.values()]));
+    refreshAll();
+  }
+  $('in-status').textContent = `${good.length} row(s) added or updated, ${nBad} row(s) skipped. Uploaded species are saved in this browser only.`;
+}
+function instrInit(){
+  $('in-tpl').onclick = () => download('polyatomic-template.csv', toCSV([
+    {id:'SeO4', kind:'anion', formula:'SeO4^2-', names:'selenate', center:'Se', ligands:'O O O O', rule:''},
+    {id:'H2SeO4', kind:'oxoacid', formula:'H2SeO4', names:'selenic acid', center:'Se', ligands:'O OH O OH', rule:''},
+    {id:'H2Se', kind:'binary', formula:'H2Se', names:'hydroselenic acid', center:'Se', ligands:'H H', rule:''},
+  ]));
+  $('in-cur').onclick = () => download('polyatomic-species.csv', toCSV(LIST.map(rowOf)));
+  $('in-file').onchange = e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => handleUpload(String(rd.result)); rd.readAsText(f); e.target.value = ''; };
+  $('in-remove').onclick = () => { store(STORE_KEY, null); refreshAll(); $('in-errs').innerHTML = ''; $('in-status').textContent = 'Uploaded species removed; the built-in list is back.'; };
+}
+function refreshAll(){
+  loadSpecies(); drawFilters('s2n'); drawFilters('n2s'); reviewInit();
+  s2nLoad(pick('s2n')); n2sLoad(pick('n2s'));
+  $('in-status').textContent = LIST.uploaded ? `${LIST.uploaded} uploaded species in use in this browser.` : '';
+}
+
+// ---------- init ----------
+function init(){
+  document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
+  });
+  $('s2n-next').onclick = () => s2nLoad(pick('s2n'));
+  $('s2n-check').onclick = s2nCheck;
+  $('s2n-in').addEventListener('keydown', e => { if (e.key === 'Enter') s2nCheck(); });
+  $('s2n-showf').onchange = () => { const it = ST.cur.s2n; $('s2n-formula').textContent = $('s2n-showf').checked && it ? dispFormula(it) : ''; };
+  $('n2s-next').onclick = () => n2sLoad(pick('n2s'));
+  document.querySelectorAll('#n2s-mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  $('n2s-fcheck').onclick = n2sFormulaCheck;
+  $('n2s-fin').addEventListener('keydown', e => { if (e.key === 'Enter') n2sFormulaCheck(); });
+  $('n2s-fin').addEventListener('input', () => {
+    const v = $('n2s-fin').value; if (!v.trim()){ $('n2s-reads').textContent = ''; return; }
+    const p = parseFormula(v); $('n2s-reads').textContent = p.err ? p.err : 'Reads as: ' + readsAs(p);
+  });
+  edInit(); instrInit(); refreshAll(); updScore('s2n'); updScore('n2s');
+}
+init();
+
+</script>
+</body>
+</html>
